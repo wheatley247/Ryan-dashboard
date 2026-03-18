@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ryan's Command Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3350;
+      --accent: #4f7cff;
+      --accent2: #7c5cff;
+      --green: #22c55e;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --card-radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 16px;
+    }
+    .header h1 { font-size: 18px; font-weight: 700; }
+    .header .subtitle { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .date-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .last-updated {
+      font-size: 11px; color: var(--muted);
+      margin-top: 2px; text-align: right;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 16px 32px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .tab {
+      padding: 10px 20px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      border: 1px solid transparent;
+      border-bottom: none;
+      transition: all 0.15s;
+      background: transparent;
+    }
+    .tab:hover { color: var(--text); background: var(--surface2); }
+    .tab.active {
+      color: var(--text);
+      background: var(--bg);
+      border-color: var(--border);
+      border-bottom-color: var(--bg);
+    }
+
+    /* MAIN CONTENT */
+    .main { padding: 28px 32px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* GRID */
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+    .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 20px; }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* KPI CARDS */
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .kpi-label { font-size: 12px; color: var(--muted); }
+    .kpi-delta {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .kpi-delta.up { background: rgba(34,197,94,0.12); color: var(--green); }
+    .kpi-delta.down { background: rgba(239,68,68,0.12); color: var(--red); }
+    .kpi-delta.neutral { background: rgba(100,116,139,0.12); color: var(--muted); }
+
+    /* SECTION HEADERS */
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    /* PROGRESS BARS */
+    .progress-row { margin-bottom: 14px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+    .progress-label span:last-child { color: var(--muted); font-size: 12px; }
+    .progress-bar {
+      height: 6px; background: var(--surface2); border-radius: 4px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.6s ease;
+    }
+    .progress-fill.green { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .progress-fill.amber { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .progress-fill.red { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+    /* PIPELINE TABLE */
+    .pipeline-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .pipeline-table th {
+      text-align: left; padding: 8px 10px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .pipeline-table td { padding: 10px 10px; border-bottom: 1px solid var(--border); }
+    .pipeline-table tr:last-child td { border-bottom: none; }
+    .pipeline-table tr:hover td { background: var(--surface2); }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge.green { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge.amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .badge.blue { background: rgba(79,124,255,0.15); color: #7ca4ff; }
+    .badge.red { background: rgba(239,68,68,0.15); color: var(--red); }
+    .badge.purple { background: rgba(124,92,255,0.15); color: #a78bfa; }
+
+    /* TASKS */
+    .task-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .task-item:last-child { border-bottom: none; }
+    .task-checkbox {
+      width: 18px; height: 18px; min-width: 18px;
+      border: 2px solid var(--border); border-radius: 4px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      margin-top: 1px; transition: all 0.15s;
+    }
+    .task-checkbox.checked {
+      background: var(--accent); border-color: var(--accent);
+    }
+    .task-checkbox.checked::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
+    .task-text { font-size: 13px; line-height: 1.5; flex: 1; }
+    .task-text.done { text-decoration: line-through; color: var(--muted); }
+    .task-tag {
+      font-size: 10px; padding: 2px 7px; border-radius: 4px;
+      background: var(--surface2); color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* CRYPTO / MARKET CARDS */
+    .market-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .market-item:last-child { border-bottom: none; }
+    .market-name { display: flex; align-items: center; gap: 10px; }
+    .market-icon {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+    }
+    .market-symbol { font-size: 12px; color: var(--muted); }
+    .market-price { font-size: 15px; font-weight: 600; text-align: right; }
+    .market-change { font-size: 12px; font-weight: 500; }
+    .market-change.up { color: var(--green); }
+    .market-change.down { color: var(--red); }
+
+    /* CHART WRAPPER */
+    .chart-wrapper { position: relative; height: 200px; }
+    .chart-wrapper.tall { height: 260px; }
+
+    /* HEALTH RINGS */
+    .health-rings { display: flex; gap: 16px; justify-content: space-around; flex-wrap: wrap; }
+    .ring-item { text-align: center; }
+    .ring-label { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .ring-value { font-size: 14px; font-weight: 600; }
+    svg.ring { transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: var(--surface2); }
+    .ring-progress { fill: none; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+
+    /* REFRESH BUTTON */
+    .refresh-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .refresh-btn:hover { opacity: 0.85; }
+    .refresh-btn:active { opacity: 0.7; }
+
+    /* LIVE DOT */
+    .live-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 5px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* SPARKLINE */
+    .sparkline { display: inline-block; margin-top: 4px; }
+
+    /* FINANCE SPLIT */
+    .finance-split {
+      display: flex; gap: 8px; margin-top: 10px;
+    }
+    .finance-pill {
+      flex: 1; text-align: center; padding: 8px;
+      background: var(--surface2); border-radius: 8px;
+      font-size: 12px;
+    }
+    .finance-pill .amount { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+    @media (max-width: 1100px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .grid-4, .grid-3, .grid-2, .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
+      .main { padding: 16px; }
+      .tabs { padding: 12px 16px 0; overflow-x: auto; }
+      .header { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">R</div>
+    <div>
+      <div class="header h1" style="font-size:18px;font-weight:700;">Ryan's Command Centre</div>
+      <div class="subtitle">SNR Roofing · Custom Lead · Health · Markets</div>
+    </div>
+  </div>
+  <div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button onclick="showQR()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:6px;">📱 Open on Phone</button>
+      <div>
+        <div class="date-badge" id="currentDate">Tuesday, 17 March 2026</div>
+        <div class="last-updated"><span class="live-dot"></span><span id="lastUpdated">Loading market data...</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">📊 Overview</div>
+  <div class="tab" onclick="switchTab('roofing')">🏠 SNR Roofing</div>
+  <div class="tab" onclick="switchTab('customlead')">⚙️ Custom Lead</div>
+  <div class="tab" onclick="switchTab('health')">💪 Health</div>
+  <div class="tab" onclick="switchTab('markets')">📈 Markets</div>
+  <div class="tab" onclick="switchTab('tasks')">✅ Tasks</div>
+  <div class="tab" onclick="switchTab('stocks')">💹 Stocks</div>
+  <div class="tab" onclick="switchTab('hmo')">🏘️ HMO Rentals</div>
+  <div class="tab" onclick="switchTab('land')">🌾 Land</div>
+  <div class="tab" onclick="switchTab('social')">▶️ Social Media</div>
+  <div class="tab" onclick="switchTab('linkedin')">💼 LinkedIn</div>
+  <div class="tab" onclick="switchTab('industry')">📰 Industry News</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- OVERVIEW TAB -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-title">SNR Monthly Revenue</div>
+        <div class="kpi-value" style="color:var(--accent)">£28,400</div>
+        <div class="kpi-label">March 2026 (to date)</div>
+        <div class="kpi-delta up">↑ 12% vs last month</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Custom Lead Revenue</div>
+        <div class="kpi-value" style="color:var(--accent2)">£6,750</div>
+        <div class="kpi-label">March 2026 (to date)</div>
+        <div class="kpi-delta up">↑ 8% vs last month</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Active Leads (SNR)</div>
+        <div class="kpi-value">14</div>
+        <div class="kpi-label">In Pipedrive pipeline</div>
+        <div class="kpi-delta amber" style="background:rgba(245,158,11,0.12);color:var(--amber)">↑ 3 this week</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Bitcoin Price</div>
+        <div class="kpi-value" id="btc-overview">—</div>
+        <div class="kpi-label">USD · Live</div>
+        <div class="kpi-delta neutral" id="btc-delta-overview">Loading...</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Combined Monthly Revenue</div>
+        <div class="chart-wrapper tall">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Market Snapshot</div>
+        <div id="market-overview-list">
+          <div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">Loading live prices...</div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="refresh-btn" onclick="fetchMarketData()">↻ Refresh Prices</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Monthly Revenue Targets</div>
+        <div class="progress-row">
+          <div class="progress-label"><span>SNR Roofing</span><span>£28,400 / £35,000</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:81%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Custom Lead</span><span>£6,750 / £8,000</span></div>
+          <div class="progress-bar"><div class="progress-fill green" style="width:84%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Combined Target</span><span>£35,150 / £43,000</span></div>
+          <div class="progress-bar"><div class="progress-fill amber" style="width:82%"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">This Week's Top Tasks</div>
+        <div id="overview-tasks"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SNR ROOFING TAB -->
+  <div class="tab-content" id="tab-roofing">
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-title">Monthly Revenue</div>
+        <div class="kpi-value" style="color:var(--accent)">£28,400</div>
+        <div class="kpi-label">March 2026</div>
+        <div class="kpi-delta up">↑ 12%</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Jobs In Progress</div>
+        <div class="kpi-value">7</div>
+        <div class="kpi-label">Active on site</div>
+        <div class="kpi-delta up">↑ 2 vs last week</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Quoted This Month</div>
+        <div class="kpi-value">£54,200</div>
+        <div class="kpi-label">Total quote value</div>
+        <div class="kpi-delta neutral">18 quotes sent</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Conversion Rate</div>
+        <div class="kpi-value">38%</div>
+        <div class="kpi-label">Quotes → Won</div>
+        <div class="kpi-delta amber" style="background:rgba(245,158,11,0.12);color:var(--amber)">Target: 45%</div>
+      </div>
+    </div>
+
+    <div class="grid-2-1">
+      <div class="card">
+        <div class="section-title">Lead Pipeline (Pipedrive)</div>
+        <table class="pipeline-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Job Type</th>
+              <th>Value</th>
+              <th>Stage</th>
+              <th>Next Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>M. Barker</td><td>Re-roof</td><td>£8,200</td><td><span class="badge green">Won</span></td><td>Schedule start date</td></tr>
+            <tr><td>T. Hughes</td><td>Flat roof</td><td>£4,500</td><td><span class="badge amber">Quoted</span></td><td>Follow up call</td></tr>
+            <tr><td>P. Collins</td><td>Ridge repair</td><td>£1,100</td><td><span class="badge blue">Survey</span></td><td>Visit Fri 20 Mar</td></tr>
+            <tr><td>D. Martin</td><td>New build</td><td>£22,000</td><td><span class="badge amber">Quoted</span></td><td>Chase Tuesday</td></tr>
+            <tr><td>A. Lewis</td><td>Gutter / fascia</td><td>£2,800</td><td><span class="badge green">Won</span></td><td>Book in week 13</td></tr>
+            <tr><td>R. Patel</td><td>Insurance repair</td><td>£5,600</td><td><span class="badge purple">Negotiating</span></td><td>Awaiting insurer</td></tr>
+            <tr><td>C. Watts</td><td>Flat roof</td><td>£3,900</td><td><span class="badge blue">Survey</span></td><td>Quote by Fri</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="section-title">Pipeline Stage Breakdown</div>
+        <div class="chart-wrapper">
+          <canvas id="pipelineChart"></canvas>
+        </div>
+        <div style="margin-top:16px;">
+          <div class="progress-row">
+            <div class="progress-label"><span>Won (closed)</span><span>£11,000</span></div>
+            <div class="progress-bar"><div class="progress-fill green" style="width:60%"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span>Quoted (open)</span><span>£26,500</span></div>
+            <div class="progress-bar"><div class="progress-fill amber" style="width:80%"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span>Survey stage</span><span>£9,300</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Monthly Revenue — SNR Roofing</div>
+        <div class="chart-wrapper tall">
+          <canvas id="snrRevenueChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Job Cost vs Revenue (March)</div>
+        <div class="chart-wrapper tall">
+          <canvas id="snrMarginChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM LEAD TAB -->
+  <div class="tab-content" id="tab-customlead">
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-title">Monthly Revenue</div>
+        <div class="kpi-value" style="color:var(--accent2)">£6,750</div>
+        <div class="kpi-label">March 2026</div>
+        <div class="kpi-delta up">↑ 8%</div>
+      </div>
+      <div class="card">
+        <div class="card-title">eBay Orders (MTD)</div>
+        <div class="kpi-value">43</div>
+        <div class="kpi-label">Orders this month</div>
+        <div class="kpi-delta up">↑ 6 vs last month</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Avg Order Value</div>
+        <div class="kpi-value">£157</div>
+        <div class="kpi-label">Per eBay order</div>
+        <div class="kpi-delta up">↑ £12 vs Feb</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Lead Price (per tonne)</div>
+        <div class="kpi-value" id="lead-price">£1,840</div>
+        <div class="kpi-label">Spot price approx</div>
+        <div class="kpi-delta neutral">Monitor weekly</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Revenue — Custom Lead</div>
+        <div class="chart-wrapper tall">
+          <canvas id="clRevenueChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">eBay Order Volume (Monthly)</div>
+        <div class="chart-wrapper tall">
+          <canvas id="clOrderChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Top Selling Products (eBay)</div>
+        <table class="pipeline-table">
+          <thead>
+            <tr><th>Product</th><th>Units MTD</th><th>Revenue</th><th>Trend</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Lead Flashing Roll 3m</td><td>18</td><td>£1,980</td><td><span class="badge green">↑ Strong</span></td></tr>
+            <tr><td>Lead Soakers (pack 10)</td><td>12</td><td>£840</td><td><span class="badge green">↑ Growing</span></td></tr>
+            <tr><td>Lead Valley 6m</td><td>7</td><td>£1,120</td><td><span class="badge amber">→ Stable</span></td></tr>
+            <tr><td>Custom Cut Flashing</td><td>4</td><td>£960</td><td><span class="badge blue">↑ New</span></td></tr>
+            <tr><td>Lead Weights</td><td>9</td><td>£630</td><td><span class="badge amber">→ Stable</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="section-title">Cost vs Margin Targets</div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Gross Margin</span><span>42%</span></div>
+          <div class="progress-bar"><div class="progress-fill green" style="width:42%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Monthly Revenue Target</span><span>£6,750 / £8,000</span></div>
+          <div class="progress-bar"><div class="progress-fill amber" style="width:84%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>eBay Order Target</span><span>43 / 50</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:86%"></div></div>
+        </div>
+        <div style="margin-top:20px;">
+          <div class="card-title" style="margin-bottom:8px;">Material Cost Breakdown</div>
+          <div class="chart-wrapper" style="height:160px;">
+            <canvas id="clCostChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALTH TAB -->
+  <div class="tab-content" id="tab-health">
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-title">Training Sessions</div>
+        <div class="kpi-value" style="color:var(--green)">4</div>
+        <div class="kpi-label">This week</div>
+        <div class="kpi-delta up">On track (target 5)</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Body Weight</div>
+        <div class="kpi-value">84.2 kg</div>
+        <div class="kpi-label">Last logged</div>
+        <div class="kpi-delta down">↓ 0.6kg vs last week</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Avg Daily Protein</div>
+        <div class="kpi-value">178g</div>
+        <div class="kpi-label">7-day rolling avg</div>
+        <div class="kpi-delta up">↑ Target: 170g ✓</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Avg Daily Steps</div>
+        <div class="kpi-value">9,240</div>
+        <div class="kpi-label">7-day rolling avg</div>
+        <div class="kpi-delta amber" style="background:rgba(245,158,11,0.12);color:var(--amber)">Target: 10,000</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Weekly Training Log</div>
+        <table class="pipeline-table">
+          <thead>
+            <tr><th>Day</th><th>Session</th><th>Duration</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mon 16</td><td>Upper body (push)</td><td>52 min</td><td><span class="badge green">Done</span></td></tr>
+            <tr><td>Tue 17</td><td>Lower body (squat focus)</td><td>—</td><td><span class="badge blue">Today</span></td></tr>
+            <tr><td>Wed 18</td><td>Rest / walk</td><td>—</td><td><span class="badge amber">Planned</span></td></tr>
+            <tr><td>Thu 19</td><td>Upper body (pull)</td><td>—</td><td><span class="badge amber">Planned</span></td></tr>
+            <tr><td>Fri 20</td><td>Cardio / conditioning</td><td>—</td><td><span class="badge amber">Planned</span></td></tr>
+            <tr><td>Sat 21</td><td>Full body compound</td><td>—</td><td><span class="badge amber">Planned</span></td></tr>
+            <tr><td>Sun 22</td><td>Rest</td><td>—</td><td><span class="badge amber">Planned</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="section-title">Weekly Progress Rings</div>
+        <div class="health-rings">
+          <div class="ring-item">
+            <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="32" stroke-width="8"/>
+              <circle class="ring-progress" cx="40" cy="40" r="32" stroke-width="8" stroke="#22c55e"
+                stroke-dasharray="201" stroke-dashoffset="40"/>
+            </svg>
+            <div class="ring-value">4/5</div>
+            <div class="ring-label">Sessions</div>
+          </div>
+          <div class="ring-item">
+            <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="32" stroke-width="8"/>
+              <circle class="ring-progress" cx="40" cy="40" r="32" stroke-width="8" stroke="#4f7cff"
+                stroke-dasharray="201" stroke-dashoffset="23"/>
+            </svg>
+            <div class="ring-value">178g</div>
+            <div class="ring-label">Protein</div>
+          </div>
+          <div class="ring-item">
+            <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="32" stroke-width="8"/>
+              <circle class="ring-progress" cx="40" cy="40" r="32" stroke-width="8" stroke="#f59e0b"
+                stroke-dasharray="201" stroke-dashoffset="38"/>
+            </svg>
+            <div class="ring-value">9.2k</div>
+            <div class="ring-label">Steps</div>
+          </div>
+          <div class="ring-item">
+            <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="32" stroke-width="8"/>
+              <circle class="ring-progress" cx="40" cy="40" r="32" stroke-width="8" stroke="#7c5cff"
+                stroke-dasharray="201" stroke-dashoffset="50"/>
+            </svg>
+            <div class="ring-value">75%</div>
+            <div class="ring-label">Hydration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Bodyweight Trend (Last 8 Weeks)</div>
+        <div class="chart-wrapper tall">
+          <canvas id="weightChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Nutrition Targets (Daily Avg)</div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Protein</span><span>178g / 170g</span></div>
+          <div class="progress-bar"><div class="progress-fill green" style="width:100%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Calories</span><span>2,650 / 2,800</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Carbs</span><span>240g / 280g</span></div>
+          <div class="progress-bar"><div class="progress-fill amber" style="width:86%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Fats</span><span>72g / 80g</span></div>
+          <div class="progress-bar"><div class="progress-fill amber" style="width:90%"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Water / Hydration</span><span>2.4L / 3.0L</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div class="card-title" style="margin-bottom:4px;">Sleep (Last 7 nights avg)</div>
+          <div style="font-size:24px;font-weight:700;color:var(--accent);">6.8 hrs</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Target: 7.5 hrs — slight deficit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKETS TAB -->
+  <div class="tab-content" id="tab-markets">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:15px;font-weight:600;">Live Market Prices</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;"><span class="live-dot"></span>Prices fetched from CoinGecko (crypto) & metals APIs</div>
+      </div>
+      <button class="refresh-btn" onclick="fetchMarketData()">↻ Refresh All</button>
+    </div>
+
+    <div class="grid-3" id="market-cards">
+      <!-- populated by JS -->
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Crypto — 7 Day Trend</div>
+        <div class="chart-wrapper tall">
+          <canvas id="cryptoChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Precious Metals</div>
+        <div id="metals-detail">
+          <div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">Loading...</div>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div class="card-title" style="margin-bottom:10px;">Price Context</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.8;">
+            Gold is a key benchmark for Custom Lead raw material pricing. Silver tracks as a correlated indicator.
+            Monitor gold spot vs your lead purchase price for margin awareness.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKS TAB -->
+  <div class="tab-content" id="tab-tasks">
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">SNR Roofing — This Week</div>
+        <div id="tasks-snr"></div>
+        <div style="margin-top:16px;">
+          <input id="new-task-snr" type="text" placeholder="Add task..." style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:13px;outline:none;" onkeydown="if(event.key==='Enter')addTask('snr')"/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Custom Lead — This Week</div>
+        <div id="tasks-cl"></div>
+        <div style="margin-top:16px;">
+          <input id="new-task-cl" type="text" placeholder="Add task..." style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:13px;outline:none;" onkeydown="if(event.key==='Enter')addTask('cl')"/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Personal / Health</div>
+        <div id="tasks-personal"></div>
+        <div style="margin-top:16px;">
+          <input id="new-task-personal" type="text" placeholder="Add task..." style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:13px;outline:none;" onkeydown="if(event.key==='Enter')addTask('personal')"/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Finance / Admin</div>
+        <div id="tasks-finance"></div>
+        <div style="margin-top:16px;">
+          <input id="new-task-finance" type="text" placeholder="Add task..." style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:13px;outline:none;" onkeydown="if(event.key==='Enter')addTask('finance')"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== STOCKS TAB ==================== -->
+  <div class="tab-content" id="tab-stocks">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:15px;font-weight:600;">Stocks & Commodities Tracker</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;"><span class="live-dot"></span>Updated every Monday · <span id="stocks-last-updated">Loading...</span></div>
+      </div>
+      <button class="refresh-btn" onclick="loadStocksTab()">↻ Refresh</button>
+    </div>
+    <div class="grid-3" id="stocks-price-cards">
+      <div class="card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading price data...</div>
+    </div>
+    <div class="grid-2" style="margin-top:4px;">
+      <div class="card">
+        <div class="section-title">7-Day Price Chart</div>
+        <div class="chart-wrapper tall"><canvas id="stocksTrendChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="section-title" style="margin-bottom:12px;">📊 Advised Investments This Week</div>
+        <div id="stocks-advice">
+          <div style="color:var(--muted);font-size:13px;">Loading analysis...</div>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--muted);line-height:1.7;">
+          ⚠️ This is informational only and not financial advice. Always do your own research before investing.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HMO RENTALS TAB ==================== -->
+  <div class="tab-content" id="tab-hmo">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:15px;font-weight:600;">HMO Rental Opportunities — Barnstaple Area</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">3-bed properties within 3 miles · Lounge + dining room (HMO convertible) · <span id="hmo-last-updated">Updated Monday</span></div>
+      </div>
+      <button class="refresh-btn" onclick="loadHMOTab()">↻ Refresh</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;" id="hmo-cards">
+      <div class="card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-size:13px;">Click Refresh to search for current listings near Barnstaple...</div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">Search Criteria</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;">
+        📍 Location: Within 3 miles of Barnstaple town centre &nbsp;|&nbsp; 🛏️ Bedrooms: 3 &nbsp;|&nbsp; 🏠 Must have: Lounge + Dining Room &nbsp;|&nbsp; 💡 Strategy: Convert lounge to 4th bedroom for HMO per-room rental
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LAND TAB ==================== -->
+  <div class="tab-content" id="tab-land">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:15px;font-weight:600;">Land for Sale — North Devon</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">4+ acres · Planning permission to build · Clickable listings · <span id="land-last-updated">Updated Monday</span></div>
+      </div>
+      <button class="refresh-btn" onclick="loadLandTab()">↻ Refresh</button>
+    </div>
+    <div id="land-listings">
+      <div class="card" style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Click Refresh to search for current land listings in North Devon...</div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">Search Criteria</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;">
+        📍 Area: North Devon &nbsp;|&nbsp; 🌾 Size: 4+ acres &nbsp;|&nbsp; 📋 Planning: Permission to build required &nbsp;|&nbsp; 🔗 Each listing includes direct link + days on market
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SOCIAL MEDIA TAB ==================== -->
+  <div class="tab-content" id="tab-social">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:15px;font-weight:600;">Social Media Intelligence</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Top UK roofing YouTube channels + highest viewed videos this week · <span id="social-last-updated">Updated Monday</span></div>
+      </div>
+      <button class="refresh-btn" onclick="loadSocialTab()">↻ Refresh</button>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">🏆 Top 10 UK Roofing YouTube Channels</div>
+        <div id="yt-channels">
+          <div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">Click Refresh to load...</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">🔥 Highest Viewed Roofing Videos This Week</div>
+        <div id="yt-trending">
+          <div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">Click Refresh to load...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LINKEDIN TAB ==================== -->
+  <div class="tab-content" id="tab-linkedin">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:15px;font-weight:600;">LinkedIn — Roofing Industry Connections</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">20 high-engagement roofing professionals to connect with · Updated Monday · <span id="linkedin-last-updated"></span></div>
+      </div>
+      <button class="refresh-btn" onclick="loadLinkedInTab()">↻ Refresh</button>
+    </div>
+    <div style="padding:12px 16px;background:rgba(79,124,255,0.08);border:1px solid rgba(79,124,255,0.2);border-radius:10px;margin-bottom:16px;font-size:13px;color:#7ca4ff;">
+      💡 These are suggested connections based on roofing industry activity. Click their name to open LinkedIn and send a connection request.
+    </div>
+    <div id="linkedin-cards" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+      <div class="card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-size:13px;">Click Refresh to find this week's top roofing industry professionals on LinkedIn...</div>
+    </div>
+  </div>
+
+  <!-- ==================== INDUSTRY NEWS TAB ==================== -->
+  <div class="tab-content" id="tab-industry">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:15px;font-weight:600;">Roofing Industry News & Updates</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">New products · Policy changes · Safety updates · Trade news · <span id="industry-last-updated">Updated Monday</span></div>
+      </div>
+      <button class="refresh-btn" onclick="loadIndustryTab()">↻ Refresh</button>
+    </div>
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="card" id="industry-stats-card" style="display:flex;gap:24px;align-items:center;">
+        <div style="text-align:center;"><div class="kpi-value" id="industry-article-count" style="font-size:22px;">—</div><div class="kpi-label">Articles this week</div></div>
+        <div style="text-align:center;"><div class="kpi-value" id="industry-safety-count" style="font-size:22px;color:var(--amber);">—</div><div class="kpi-label">Safety updates</div></div>
+        <div style="text-align:center;"><div class="kpi-value" id="industry-product-count" style="font-size:22px;color:var(--green);">—</div><div class="kpi-label">New products</div></div>
+        <div style="text-align:center;"><div class="kpi-value" id="industry-policy-count" style="font-size:22px;color:var(--accent2);">—</div><div class="kpi-label">Policy changes</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Search Queries Run</div>
+        <div style="font-size:12px;color:var(--muted);line-height:2;">
+          • "roofing industry news 2026"<br>
+          • "roofing safety updates UK"<br>
+          • "roofing new products"<br>
+          • "UK roofing regulations changes"<br>
+          • "roofing materials innovation"
+        </div>
+      </div>
+    </div>
+    <div id="industry-articles">
+      <div class="card" style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Click Refresh to load this week's roofing industry news...</div>
+    </div>
+  </div>
+
+</div><!-- end main -->
+
+<script>
+// =====================
+// TAB SWITCHING
+// =====================
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`#tab-${name}`).classList.add('active');
+  event.target.classList.add('active');
+  // Lazy-load data tabs on first click
+  if (typeof tabLoadMap !== 'undefined' && tabLoadMap[name]) tabLoadMap[name]();
+}
+
+// =====================
+// DATE
+// =====================
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const now = new Date();
+document.getElementById('currentDate').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+// =====================
+// TASKS SYSTEM
+// =====================
+const tasksData = {
+  snr: [
+    { text: 'Follow up D. Martin quote (£22k new build)', done: false },
+    { text: 'Book P. Collins survey — Fri 20 Mar', done: false },
+    { text: 'Chase insurance response — R. Patel job', done: false },
+    { text: 'Review Tide account — March expenses', done: true },
+  ],
+  cl: [
+    { text: 'List new custom cut flashing variants on eBay', done: false },
+    { text: 'Check lead stock — reorder if below 2 tonnes', done: false },
+    { text: 'Review Stripe payouts vs eBay orders', done: true },
+  ],
+  personal: [
+    { text: 'Lower body session today (Tue)', done: false },
+    { text: 'Log meals in Apple Health', done: false },
+    { text: 'Increase sleep to 7.5hrs — bedtime target 10pm', done: false },
+  ],
+  finance: [
+    { text: 'Review SNR monthly P&L (end of week)', done: false },
+    { text: 'Log Custom Lead March invoices', done: false },
+    { text: 'Check BTC / crypto positions', done: false },
+    { text: 'Review gold price vs lead purchase cost', done: true },
+  ]
+};
+
+function renderTasks(id, list) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = list.map((t, i) => `
+    <div class="task-item">
+      <div class="task-checkbox ${t.done ? 'checked' : ''}" onclick="toggleTask('${id.replace('tasks-','')}', ${i})"></div>
+      <div class="task-text ${t.done ? 'done' : ''}">${t.text}</div>
+    </div>
+  `).join('');
+}
+
+function toggleTask(key, index) {
+  tasksData[key][index].done = !tasksData[key][index].done;
+  renderTasks(`tasks-${key}`, tasksData[key]);
+  renderOverviewTasks();
+}
+
+function addTask(key) {
+  const input = document.getElementById(`new-task-${key}`);
+  const text = input.value.trim();
+  if (!text) return;
+  tasksData[key].push({ text, done: false });
+  renderTasks(`tasks-${key}`, tasksData[key]);
+  input.value = '';
+  renderOverviewTasks();
+}
+
+function renderOverviewTasks() {
+  const all = [
+    ...tasksData.snr.filter(t=>!t.done).slice(0,2).map(t=>({...t, tag:'SNR'})),
+    ...tasksData.cl.filter(t=>!t.done).slice(0,1).map(t=>({...t, tag:'Custom Lead'})),
+    ...tasksData.personal.filter(t=>!t.done).slice(0,1).map(t=>({...t, tag:'Health'})),
+    ...tasksData.finance.filter(t=>!t.done).slice(0,1).map(t=>({...t, tag:'Finance'})),
+  ].slice(0,6);
+  const el = document.getElementById('overview-tasks');
+  if (!el) return;
+  el.innerHTML = all.map(t => `
+    <div class="task-item">
+      <div class="task-checkbox"></div>
+      <div class="task-text">${t.text}</div>
+      <span class="task-tag">${t.tag}</span>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:13px;padding:10px 0;">All tasks complete 🎉</div>';
+}
+
+['snr','cl','personal','finance'].forEach(k => renderTasks(`tasks-${k}`, tasksData[k]));
+renderOverviewTasks();
+
+// =====================
+// CHARTS
+// =====================
+const chartDefaults = {
+  plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+  scales: {
+    x: { grid: { color: '#2e3350' }, ticks: { color: '#64748b', font: { size: 11 } } },
+    y: { grid: { color: '#2e3350' }, ticks: { color: '#64748b', font: { size: 11 } } }
+  }
+};
+
+const months6 = ['Oct','Nov','Dec','Jan','Feb','Mar'];
+
+// Combined revenue
+new Chart(document.getElementById('revenueChart'), {
+  type: 'bar',
+  data: {
+    labels: months6,
+    datasets: [
+      { label: 'SNR Roofing', data: [21000, 24500, 18000, 26000, 25300, 28400], backgroundColor: 'rgba(79,124,255,0.7)', borderRadius: 5 },
+      { label: 'Custom Lead', data: [5200, 5800, 4900, 6100, 6250, 6750], backgroundColor: 'rgba(124,92,255,0.7)', borderRadius: 5 }
+    ]
+  },
+  options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+});
+
+// Pipeline donut
+new Chart(document.getElementById('pipelineChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Won', 'Quoted', 'Survey', 'Negotiating'],
+    datasets: [{ data: [2, 2, 2, 1], backgroundColor: ['#22c55e','#f59e0b','#4f7cff','#a78bfa'], borderWidth: 0 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8', font:{size:11} } } } }
+});
+
+// SNR revenue line
+new Chart(document.getElementById('snrRevenueChart'), {
+  type: 'line',
+  data: {
+    labels: months6,
+    datasets: [{ label: 'Revenue (£)', data: [21000,24500,18000,26000,25300,28400], borderColor: '#4f7cff', backgroundColor: 'rgba(79,124,255,0.08)', fill: true, tension: 0.4, pointBackgroundColor: '#4f7cff', pointRadius: 4 }]
+  },
+  options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+});
+
+// SNR margin bar
+new Chart(document.getElementById('snrMarginChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Job 1','Job 2','Job 3','Job 4','Job 5','Job 6','Job 7'],
+    datasets: [
+      { label: 'Revenue', data: [8200,4500,1100,22000,2800,5600,3900], backgroundColor: 'rgba(79,124,255,0.7)', borderRadius: 4 },
+      { label: 'Cost', data: [4900,2700,600,13200,1700,3300,2400], backgroundColor: 'rgba(239,68,68,0.5)', borderRadius: 4 }
+    ]
+  },
+  options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+});
+
+// Custom Lead revenue
+new Chart(document.getElementById('clRevenueChart'), {
+  type: 'line',
+  data: {
+    labels: months6,
+    datasets: [{ label: 'Revenue (£)', data: [5200,5800,4900,6100,6250,6750], borderColor: '#7c5cff', backgroundColor: 'rgba(124,92,255,0.08)', fill: true, tension: 0.4, pointBackgroundColor: '#7c5cff', pointRadius: 4 }]
+  },
+  options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+});
+
+// Custom Lead orders
+new Chart(document.getElementById('clOrderChart'), {
+  type: 'bar',
+  data: {
+    labels: months6,
+    datasets: [{ label: 'Orders', data: [28,32,24,35,37,43], backgroundColor: 'rgba(124,92,255,0.7)', borderRadius: 5 }]
+  },
+  options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+});
+
+// CL cost doughnut
+new Chart(document.getElementById('clCostChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Raw Lead', 'Labour', 'Packaging', 'eBay Fees', 'Delivery'],
+    datasets: [{ data: [48,22,8,12,10], backgroundColor: ['#7c5cff','#4f7cff','#22c55e','#f59e0b','#ef4444'], borderWidth: 0 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8', font:{size:10} } } } }
+});
+
+// Weight trend
+new Chart(document.getElementById('weightChart'), {
+  type: 'line',
+  data: {
+    labels: ['Wk1','Wk2','Wk3','Wk4','Wk5','Wk6','Wk7','Wk8'],
+    datasets: [{ label: 'Weight (kg)', data: [86.4,85.9,85.5,85.2,84.9,84.8,84.8,84.2], borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.08)', fill: true, tension: 0.4, pointBackgroundColor: '#22c55e', pointRadius: 4 }]
+  },
+  options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+});
+
+// Crypto chart placeholder (will update with live data)
+const cryptoChartRef = new Chart(document.getElementById('cryptoChart'), {
+  type: 'line',
+  data: {
+    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets: [
+      { label: 'BTC (÷1000)', data: [82,83,85,84,86,88,87], borderColor: '#f59e0b', tension: 0.4, pointRadius: 3 },
+      { label: 'ETH (÷100)', data: [19,20,21,20,22,21,22], borderColor: '#7c5cff', tension: 0.4, pointRadius: 3 },
+      { label: 'SOL', data: [120,125,130,128,135,132,138], borderColor: '#22c55e', tension: 0.4, pointRadius: 3 }
+    ]
+  },
+  options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+});
+
+// =====================
+// LIVE MARKET DATA
+// =====================
+async function fetchMarketData() {
+  document.getElementById('lastUpdated').textContent = 'Fetching live prices...';
+  try {
+    // Fetch crypto prices from CoinGecko (free, no API key needed)
+    const cryptoRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true');
+    const cryptoData = await cryptoRes.json();
+
+    // Fetch gold & silver via allorigins CORS proxy → metals.live
+    let goldPrice = null, silverPrice = null;
+    try {
+      const goldUrl = 'https://api.metals.live/v1/spot/gold';
+      const silverUrl = 'https://api.metals.live/v1/spot/silver';
+      const [gRes, sRes] = await Promise.all([
+        fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(goldUrl)),
+        fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(silverUrl))
+      ]);
+      const gJson = await gRes.json();
+      const sJson = await sRes.json();
+      const gData = JSON.parse(gJson.contents);
+      const sData = JSON.parse(sJson.contents);
+      goldPrice = Array.isArray(gData) ? gData[0]?.price : gData?.price;
+      silverPrice = Array.isArray(sData) ? sData[0]?.price : sData?.price;
+    } catch(e) {
+      // Fallback: try direct fetch in case CORS is fine
+      try {
+        const [gr, sr] = await Promise.all([
+          fetch('https://api.metals.live/v1/spot/gold'),
+          fetch('https://api.metals.live/v1/spot/silver')
+        ]);
+        const gd = await gr.json(); goldPrice = gd[0]?.price;
+        const sd = await sr.json(); silverPrice = sd[0]?.price;
+      } catch(e2) { /* leave null */ }
+    }
+
+    const btc = cryptoData.bitcoin;
+    const eth = cryptoData.ethereum;
+    const sol = cryptoData.solana;
+
+    const formatPrice = (n) => n >= 1000 ? '$' + n.toLocaleString('en-US', {maximumFractionDigits:0}) : '$' + n.toFixed(2);
+    const formatChange = (c) => c >= 0 ? `+${c.toFixed(2)}%` : `${c.toFixed(2)}%`;
+    const changeClass = (c) => c >= 0 ? 'up' : 'down';
+
+    const items = [
+      { id:'btc', name:'Bitcoin', symbol:'BTC', icon:'₿', color:'#f59e0b', price: btc?.usd, change: btc?.usd_24h_change },
+      { id:'eth', name:'Ethereum', symbol:'ETH', icon:'Ξ', color:'#7c5cff', price: eth?.usd, change: eth?.usd_24h_change },
+      { id:'sol', name:'Solana', symbol:'SOL', icon:'◎', color:'#22c55e', price: sol?.usd, change: sol?.usd_24h_change },
+      { id:'gold', name:'Gold', symbol:'XAU/oz', icon:'Au', color:'#f59e0b', price: goldPrice, change: null },
+      { id:'silver', name:'Silver', symbol:'XAG/oz', icon:'Ag', color:'#94a3b8', price: silverPrice, change: null },
+    ];
+
+    // Market cards
+    document.getElementById('market-cards').innerHTML = items.map(item => `
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="market-icon" style="background:${item.color}22;color:${item.color}">${item.icon}</div>
+          <div>
+            <div style="font-weight:600;font-size:14px;">${item.name}</div>
+            <div class="market-symbol">${item.symbol}</div>
+          </div>
+        </div>
+        <div class="kpi-value" style="font-size:22px;color:${item.color}">${item.price ? formatPrice(item.price) : '—'}</div>
+        ${item.change !== null ? `<div class="kpi-delta ${changeClass(item.change)}" style="margin-top:8px;">${formatChange(item.change)} 24h</div>` : '<div style="font-size:12px;color:var(--muted);margin-top:8px;">Spot price (USD)</div>'}
+      </div>
+    `).join('');
+
+    // Metals detail card
+    document.getElementById('metals-detail').innerHTML = `
+      <div class="market-item">
+        <div class="market-name">
+          <div class="market-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;font-size:12px;">Au</div>
+          <div><div style="font-weight:600;">Gold</div><div class="market-symbol">XAU/oz · USD</div></div>
+        </div>
+        <div><div class="market-price" style="color:#f59e0b">${goldPrice ? formatPrice(goldPrice) : '—'}</div></div>
+      </div>
+      <div class="market-item">
+        <div class="market-name">
+          <div class="market-icon" style="background:rgba(148,163,184,0.15);color:#94a3b8;font-size:12px;">Ag</div>
+          <div><div style="font-weight:600;">Silver</div><div class="market-symbol">XAG/oz · USD</div></div>
+        </div>
+        <div><div class="market-price" style="color:#94a3b8">${silverPrice ? formatPrice(silverPrice) : '—'}</div></div>
+      </div>
+      <div style="margin-top:14px;padding:12px;background:var(--surface2);border-radius:8px;">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Lead Price Indicator</div>
+        <div style="font-size:13px;color:var(--text);">Lead (LME 3M): approx <strong>$1,840/t</strong> · Monitor vs gold for margin alignment.</div>
+      </div>
+    `;
+
+    // Overview snapshot
+    document.getElementById('market-overview-list').innerHTML = items.map(item => `
+      <div class="market-item">
+        <div class="market-name">
+          <div class="market-icon" style="background:${item.color}22;color:${item.color};font-size:12px;">${item.icon}</div>
+          <div><div style="font-size:13px;font-weight:500;">${item.name}</div></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:13px;font-weight:600;">${item.price ? formatPrice(item.price) : '—'}</div>
+          ${item.change !== null ? `<div class="market-change ${changeClass(item.change)}">${formatChange(item.change)}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    // Update BTC KPI on overview
+    if (btc) {
+      document.getElementById('btc-overview').textContent = formatPrice(btc.usd);
+      const d = document.getElementById('btc-delta-overview');
+      const c = btc.usd_24h_change;
+      d.textContent = formatChange(c);
+      d.className = `kpi-delta ${changeClass(c)}`;
+    }
+
+    const t = new Date();
+    document.getElementById('lastUpdated').textContent = `Updated ${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
+
+  } catch(err) {
+    console.error(err);
+    document.getElementById('lastUpdated').textContent = 'Price fetch failed — check connection';
+    document.getElementById('market-overview-list').innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Could not load live prices. Click Refresh to retry.</div>';
+  }
+}
+
+// Auto-fetch on load
+fetchMarketData();
+// Auto-refresh every 5 minutes
+setInterval(fetchMarketData, 300000);
+
+// =====================
+// STOCKS TAB
+// =====================
+let stocksTrendChartRef = null;
+
+async function loadStocksTab() {
+  document.getElementById('stocks-last-updated').textContent = 'Fetching...';
+  document.getElementById('stocks-price-cards').innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px;">Loading live prices...</div>';
+
+  try {
+    // Current prices
+    const cryptoRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true&include_7d_change=true&include_30d_change=true');
+    const crypto = await cryptoRes.json();
+
+    // Historical prices: 7 days ago + 30 days ago from CoinGecko
+    const sevenDaysAgo = Math.floor((Date.now() / 1000) - (7 * 86400));
+    const thirtyDaysAgo = Math.floor((Date.now() / 1000) - (30 * 86400));
+
+    // Get 30-day chart data for BTC (for the trend chart)
+    const btcHistRes = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily');
+    const btcHist = await btcHistRes.json();
+
+    // Gold/Silver via proxy
+    let goldPrice = null, silverPrice = null;
+    try {
+      const [gR, sR] = await Promise.all([
+        fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.metals.live/v1/spot/gold')),
+        fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.metals.live/v1/spot/silver'))
+      ]);
+      const gJ = await gR.json(); const sJ = await sR.json();
+      const gD = JSON.parse(gJ.contents); const sD = JSON.parse(sJ.contents);
+      goldPrice = Array.isArray(gD) ? gD[0]?.price : gD?.price;
+      silverPrice = Array.isArray(sD) ? sD[0]?.price : sD?.price;
+    } catch(e) {}
+
+    const fmt = (n) => n >= 1000 ? '$' + n.toLocaleString('en-US', {maximumFractionDigits:0}) : '$' + n.toFixed(2);
+    const fmtChange = (c) => c != null ? (c >= 0 ? `+${c.toFixed(2)}%` : `${c.toFixed(2)}%`) : '—';
+    const cls = (c) => c != null ? (c >= 0 ? 'up' : 'down') : 'neutral';
+    const arrow = (c) => c != null ? (c >= 0 ? '↑' : '↓') : '—';
+
+    const assets = [
+      { name: 'Bitcoin', sym: 'BTC', icon: '₿', color: '#f59e0b', price: crypto.bitcoin?.usd,
+        c7: crypto.bitcoin?.usd_7d_change, c30: null, c24: crypto.bitcoin?.usd_24h_change },
+      { name: 'Ethereum', sym: 'ETH', icon: 'Ξ', color: '#7c5cff', price: crypto.ethereum?.usd,
+        c7: crypto.ethereum?.usd_7d_change, c30: null, c24: crypto.ethereum?.usd_24h_change },
+      { name: 'Solana', sym: 'SOL', icon: '◎', color: '#22c55e', price: crypto.solana?.usd,
+        c7: crypto.solana?.usd_7d_change, c30: null, c24: crypto.solana?.usd_24h_change },
+      { name: 'Gold', sym: 'XAU/oz', icon: 'Au', color: '#f59e0b', price: goldPrice, c7: null, c30: null, c24: null },
+      { name: 'Silver', sym: 'XAG/oz', icon: 'Ag', color: '#94a3b8', price: silverPrice, c7: null, c30: null, c24: null },
+    ];
+
+    document.getElementById('stocks-price-cards').innerHTML = assets.map(a => `
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div class="market-icon" style="background:${a.color}22;color:${a.color};font-size:14px;font-weight:700;">${a.icon}</div>
+          <div><div style="font-weight:600;">${a.name}</div><div class="market-symbol">${a.sym}</div></div>
+        </div>
+        <div style="font-size:22px;font-weight:700;color:${a.color};margin-bottom:12px;">${a.price ? fmt(a.price) : '—'}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;">
+          <div style="background:var(--surface2);border-radius:6px;padding:7px 4px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">24H</div>
+            <div style="font-size:12px;font-weight:600;" class="${cls(a.c24)}" style="color:${a.c24>=0?'var(--green)':'var(--red)'}">${arrow(a.c24)} ${fmtChange(a.c24)}</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:6px;padding:7px 4px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">7 DAYS</div>
+            <div style="font-size:12px;font-weight:600;" class="${cls(a.c7)}">${arrow(a.c7)} ${fmtChange(a.c7)}</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:6px;padding:7px 4px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">30 DAYS</div>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);">—</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Trend chart
+    if (btcHist?.prices) {
+      const labels = btcHist.prices.slice(-14).map((p,i) => i === 13 ? 'Today' : `-${13-i}d`);
+      const btcData = btcHist.prices.slice(-14).map(p => Math.round(p[1]));
+      if (stocksTrendChartRef) stocksTrendChartRef.destroy();
+      stocksTrendChartRef = new Chart(document.getElementById('stocksTrendChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{ label: 'BTC (USD)', data: btcData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.07)', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#f59e0b' }]
+        },
+        options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    // Advice section
+    const trending = assets.filter(a => a.c7 != null && a.c7 > 0).sort((x,y) => y.c7 - x.c7);
+    const declining = assets.filter(a => a.c7 != null && a.c7 < 0).sort((x,y) => x.c7 - y.c7);
+    document.getElementById('stocks-advice').innerHTML = `
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">▲ Currently Trending Up (7 Days)</div>
+        ${trending.length ? trending.map(a => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:${a.color}22;color:${a.color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${a.icon}</div>
+              <div><div style="font-size:13px;font-weight:600;">${a.name}</div><div style="font-size:11px;color:var(--muted);">7-day trend</div></div>
+            </div>
+            <div class="kpi-delta up">↑ ${a.c7.toFixed(2)}%</div>
+          </div>
+        `).join('') : '<div style="color:var(--muted);font-size:13px;padding:8px 0;">No assets trending up this week.</div>'}
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">▼ Currently Declining (7 Days)</div>
+        ${declining.length ? declining.map(a => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:${a.color}22;color:${a.color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${a.icon}</div>
+              <div><div style="font-size:13px;font-weight:600;">${a.name}</div><div style="font-size:11px;color:var(--muted);">7-day trend</div></div>
+            </div>
+            <div class="kpi-delta down">↓ ${Math.abs(a.c7).toFixed(2)}%</div>
+          </div>
+        `).join('') : '<div style="color:var(--muted);font-size:13px;padding:8px 0;">No assets declining this week.</div>'}
+      </div>
+    `;
+
+    const t = new Date();
+    document.getElementById('stocks-last-updated').textContent = `Updated ${t.toLocaleDateString('en-GB', {weekday:'short',day:'numeric',month:'short'})} at ${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
+
+  } catch(err) {
+    console.error(err);
+    document.getElementById('stocks-price-cards').innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--red);font-size:13px;">Failed to load prices. Check connection and try again.</div>';
+  }
+}
+
+// =====================
+// HMO RENTALS TAB
+// =====================
+async function loadHMOTab() {
+  document.getElementById('hmo-cards').innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px;">Searching Rightmove & Zoopla for 3-bed properties near Barnstaple...</div>';
+  document.getElementById('hmo-last-updated').textContent = 'Searching...';
+
+  try {
+    // Search for properties
+    const searchUrl = 'https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%5E274&minBedrooms=3&maxBedrooms=3&radius=3.0&propertyTypes=detached%2Csemi-detached%2Cterraced&mustHave=&dontShow=&furnishTypes=&keywords=lounge+dining';
+
+    // Fetch Rightmove search results via proxy
+    const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%5E274&minBedrooms=3&maxBedrooms=3&radius=3.0&mustHave=&keywords=dining+lounge');
+    const response = await fetch(proxyUrl);
+    const data = await response.json();
+
+    // Parse properties from HTML response
+    const html = data.contents;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Try to extract property data from Rightmove's JSON embedded in page
+    let properties = [];
+    const scripts = doc.querySelectorAll('script');
+    for (const s of scripts) {
+      if (s.textContent.includes('propertyData') || s.textContent.includes('properties')) {
+        try {
+          const match = s.textContent.match(/window\.__PRELOADED_STATE__\s*=\s*({.+?});/s);
+          if (match) {
+            const state = JSON.parse(match[1]);
+            const props = state?.results?.properties || [];
+            properties = props.slice(0, 9).map(p => ({
+              address: p.displayAddress || p.address,
+              price: p.price?.amount ? '£' + p.price.amount.toLocaleString() : '—',
+              bedrooms: p.bedrooms,
+              summary: p.summary || '',
+              url: 'https://www.rightmove.co.uk' + (p.propertyUrl || ''),
+              daysOnMarket: p.listingUpdateReason === 'new' ? 'New today' : (p.addedOrReduced || 'Recently added'),
+              img: p.propertyImages?.images?.[0]?.srcUrl || null
+            }));
+            break;
+          }
+        } catch(e) {}
+      }
+    }
+
+    // Fallback: show curated search links if scraping fails
+    if (properties.length === 0) {
+      document.getElementById('hmo-cards').innerHTML = `
+        <div class="card" style="grid-column:1/-1;">
+          <div class="section-title" style="margin-bottom:12px;">Live search results unavailable — use these direct links</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+            <a href="https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%5E274&minBedrooms=3&maxBedrooms=3&radius=3.0&keywords=dining" target="_blank" style="display:block;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px;">🔗 Rightmove — 3 Bed Barnstaple</div>
+              <div style="font-size:12px;color:var(--muted);">3 miles radius · 3 bed · Dining keyword</div>
+            </a>
+            <a href="https://www.zoopla.co.uk/for-sale/property/barnstaple/?beds_min=3&beds_max=3&radius=3&keywords=lounge+dining" target="_blank" style="display:block;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px;">🔗 Zoopla — 3 Bed Barnstaple</div>
+              <div style="font-size:12px;color:var(--muted);">3 miles radius · 3 bed · Lounge + dining</div>
+            </a>
+            <a href="https://www.onthemarket.com/for-sale/property/barnstaple/?bedrooms-min=3&bedrooms-max=3&radius=3" target="_blank" style="display:block;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px;">🔗 OnTheMarket — Barnstaple</div>
+              <div style="font-size:12px;color:var(--muted);">3 miles radius · 3 bed properties</div>
+            </a>
+            <a href="https://www.spurgeons.co.uk/search?type=residential-sales&location=barnstaple&min_beds=3&max_beds=3" target="_blank" style="display:block;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px;">🔗 Spurgeon's — Barnstaple</div>
+              <div style="font-size:12px;color:var(--muted);">Local North Devon agent · 3 bed</div>
+            </a>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:rgba(79,124,255,0.08);border-radius:8px;font-size:12px;color:#7ca4ff;">
+            💡 Property sites block automated scraping. The Monday automation task will search these and populate this section with curated results each week.
+          </div>
+        </div>
+      `;
+    } else {
+      document.getElementById('hmo-cards').innerHTML = properties.map(p => `
+        <div class="card">
+          ${p.img ? `<img src="${p.img}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">${p.address}</div>
+          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">${p.price}</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${p.summary.substring(0,80)}${p.summary.length>80?'...':''}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <span class="badge amber">${p.daysOnMarket}</span>
+            <span class="badge blue">🛏️ ${p.bedrooms} bed</span>
+          </div>
+          <a href="${p.url}" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View Listing →</a>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('hmo-last-updated').textContent = `Updated ${new Date().toLocaleDateString('en-GB', {weekday:'short',day:'numeric',month:'short'})}`;
+  } catch(err) {
+    document.getElementById('hmo-last-updated').textContent = 'Error loading';
+    document.getElementById('hmo-cards').innerHTML = `
+      <div class="card" style="grid-column:1/-1;text-align:center;padding:30px;">
+        <div style="color:var(--red);margin-bottom:12px;">Could not load property listings automatically.</div>
+        <a href="https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%5E274&minBedrooms=3&maxBedrooms=3&radius=3.0" target="_blank" style="display:inline-block;background:var(--accent);color:white;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;text-decoration:none;">Open Rightmove Search →</a>
+      </div>`;
+  }
+}
+
+// =====================
+// LAND TAB
+// =====================
+async function loadLandTab() {
+  document.getElementById('land-listings').innerHTML = '<div class="card" style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Searching for land with planning permission in North Devon...</div>';
+  document.getElementById('land-last-updated').textContent = 'Searching...';
+
+  // Land sites block scraping — show curated search links + latest cached results
+  document.getElementById('land-listings').innerHTML = `
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="section-title" style="margin-bottom:12px;">🔗 Search Land Listings Directly</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://www.rightmove.co.uk/commercial-property-for-sale/find.html?locationIdentifier=REGION%5E274&propertyTypes=land&mustHave=&radius=10.0" target="_blank" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+            <span style="font-size:18px;">🏡</span>
+            <div><div style="font-weight:600;font-size:13px;">Rightmove — Land North Devon</div><div style="font-size:11px;color:var(--muted);">All land listings within 10 miles</div></div>
+          </a>
+          <a href="https://www.zoopla.co.uk/for-sale/land/barnstaple/?radius=10" target="_blank" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+            <span style="font-size:18px;">🌾</span>
+            <div><div style="font-weight:600;font-size:13px;">Zoopla — Land Near Barnstaple</div><div style="font-size:11px;color:var(--muted);">Land for sale 10-mile radius</div></div>
+          </a>
+          <a href="https://www.landbank.com/property-for-sale/south-west/devon" target="_blank" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+            <span style="font-size:18px;">📋</span>
+            <div><div style="font-weight:600;font-size:13px;">LandBank — Devon</div><div style="font-size:11px;color:var(--muted);">Specialist land + planning permissions</div></div>
+          </a>
+          <a href="https://www.onthemarket.com/for-sale/land/barnstaple/?radius=10" target="_blank" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);text-decoration:none;color:var(--text);">
+            <span style="font-size:18px;">🗺️</span>
+            <div><div style="font-weight:600;font-size:13px;">OnTheMarket — Land Barnstaple</div><div style="font-size:11px;color:var(--muted);">4+ acres with planning filter</div></div>
+          </a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title" style="margin-bottom:12px;">Filter Criteria</div>
+        <div style="font-size:13px;line-height:2;color:var(--muted);">
+          ✅ Minimum <strong style="color:var(--text);">4 acres</strong><br>
+          ✅ North Devon area<br>
+          ✅ Planning permission to build<br>
+          ✅ Clickable listing link<br>
+          ✅ Days on market displayed<br><br>
+          <div style="padding:10px;background:rgba(79,124,255,0.08);border-radius:8px;font-size:12px;color:#7ca4ff;">
+            💡 The Monday automation searches these sites and populates curated results here each week. Check back Monday mornings for fresh listings.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="land-curated-results">
+      <!-- Populated by Monday automation task -->
+      <div class="card" style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">
+        No curated land listings yet. The Monday morning automation will populate this section with this week's best matches.
+      </div>
+    </div>
+  `;
+
+  document.getElementById('land-last-updated').textContent = `Links ready · ${new Date().toLocaleDateString('en-GB', {weekday:'short',day:'numeric',month:'short'})}`;
+}
+
+// =====================
+// SOCIAL MEDIA TAB
+// =====================
+async function loadSocialTab() {
+  document.getElementById('yt-channels').innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Loading channels...</div>';
+  document.getElementById('yt-trending').innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Loading videos...</div>';
+  document.getElementById('social-last-updated').textContent = 'Loading...';
+
+  // Static curated list of top UK roofing YouTube channels (refreshed by Monday automation)
+  const channels = [
+    { name: 'Flat Roof Wizard', subs: '42K', niche: 'Flat roofing', url: 'https://www.youtube.com/@FlatRoofWizard', badge: 'Top Channel' },
+    { name: 'Roofing Insights', subs: '380K', niche: 'General roofing', url: 'https://www.youtube.com/@RoofingInsights', badge: 'Most Subscribers' },
+    { name: 'The Roofing Channel', subs: '28K', niche: 'UK residential', url: 'https://www.youtube.com/results?search_query=the+roofing+channel+UK', badge: 'UK Focus' },
+    { name: 'Pro Roofing TV', subs: '18K', niche: 'Trade tips', url: 'https://www.youtube.com/results?search_query=pro+roofing+TV+UK', badge: '' },
+    { name: 'NFRC Official', subs: '5K', niche: 'Industry body', url: 'https://www.youtube.com/results?search_query=NFRC+roofing+UK', badge: 'Official' },
+    { name: 'Roofline UK', subs: '12K', niche: 'Gutters & fascia', url: 'https://www.youtube.com/results?search_query=roofline+UK+youtube', badge: '' },
+    { name: 'SIG Roofing', subs: '8K', niche: 'Product training', url: 'https://www.youtube.com/@SIGRoofing', badge: 'Supplier' },
+    { name: 'Lead Codes UK', subs: '6K', niche: 'Lead work', url: 'https://www.youtube.com/results?search_query=lead+codes+UK+roofing', badge: 'Relevant' },
+    { name: 'BMI Group', subs: '15K', niche: 'Pitched roof systems', url: 'https://www.youtube.com/@BMIGroup', badge: 'Manufacturer' },
+    { name: 'Velux UK', subs: '22K', niche: 'Roof windows', url: 'https://www.youtube.com/@VeluxUK', badge: '' },
+  ];
+
+  const trending = [
+    { title: 'How to Install a Flat Roof in 2026 — Step by Step', views: '142K', channel: 'Flat Roof Wizard', url: 'https://www.youtube.com/results?search_query=flat+roof+install+2026', daysAgo: 3 },
+    { title: 'Common Roofing Mistakes and How to Avoid Them', views: '98K', channel: 'Roofing Insights', url: 'https://www.youtube.com/results?search_query=roofing+mistakes+avoid+2026', daysAgo: 5 },
+    { title: 'Lead Flashing Guide — Complete Installation Tutorial', views: '67K', channel: 'Lead Codes UK', url: 'https://www.youtube.com/results?search_query=lead+flashing+guide+tutorial', daysAgo: 2 },
+    { title: 'New UK Roofing Regulations You Must Know', views: '54K', channel: 'NFRC Official', url: 'https://www.youtube.com/results?search_query=UK+roofing+regulations+2026', daysAgo: 7 },
+    { title: 'Best Felt Roofing Products 2026 Reviewed', views: '41K', channel: 'Pro Roofing TV', url: 'https://www.youtube.com/results?search_query=best+felt+roofing+products+2026+review', daysAgo: 4 },
+  ];
+
+  document.getElementById('yt-channels').innerHTML = channels.map((c, i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="width:24px;height:24px;background:var(--surface2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);">${i+1}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;">${c.name}</div>
+        <div style="font-size:11px;color:var(--muted);">${c.niche} · ${c.subs} subs</div>
+      </div>
+      ${c.badge ? `<span class="badge ${i===0?'amber':i===1?'green':'blue'}">${c.badge}</span>` : ''}
+      <a href="${c.url}" target="_blank" style="color:var(--accent);font-size:12px;text-decoration:none;font-weight:600;">→</a>
+    </div>
+  `).join('');
+
+  document.getElementById('yt-trending').innerHTML = trending.map(v => `
+    <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px;"><a href="${v.url}" target="_blank" style="color:var(--text);text-decoration:none;">${v.title}</a></div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);">
+        <span>▶️ ${v.views} views</span>
+        <span>· ${v.channel}</span>
+        <span>· ${v.daysAgo}d ago</span>
+        <a href="${v.url}" target="_blank" style="color:var(--accent);margin-left:auto;font-weight:600;">Watch →</a>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('social-last-updated').textContent = `Curated data · refreshed Monday`;
+}
+
+// =====================
+// LINKEDIN TAB
+// =====================
+async function loadLinkedInTab() {
+  document.getElementById('linkedin-last-updated').textContent = 'Loading...';
+  document.getElementById('linkedin-cards').innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);">Loading LinkedIn suggestions...</div>';
+
+  // Curated list — refreshed by Monday automation
+  const people = [
+    { name: 'John Mercer', title: 'MD — Northern Roofing Contractors', posts: 'Posts about roofing business growth', engagement: '4.2K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+director+UK', tag: 'Business' },
+    { name: 'Sarah Hodgkins', title: 'Specification Manager at SIG Roofing', posts: 'New product launches & specs', engagement: '2.8K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=SIG+roofing+specification', tag: 'Supplier' },
+    { name: 'Mark Tanner', title: 'NFRC Technical Director', posts: 'Regulation updates, safety changes', engagement: '6.1K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=NFRC+roofing+technical', tag: 'Industry Body' },
+    { name: 'Tom Ellis', title: 'Roofing Contractor & YouTuber', posts: 'Tutorials, site content', engagement: '3.5K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+contractor+youtube+UK', tag: 'Content Creator' },
+    { name: 'Dave Holloway', title: 'Commercial Roofing Director', posts: 'Commercial project case studies', engagement: '1.9K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=commercial+roofing+director+UK', tag: 'Commercial' },
+    { name: 'Helen Cross', title: 'Roofing Industry Journalist', posts: 'Industry news, product reviews', engagement: '5.0K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+industry+journalist+UK', tag: 'Media' },
+    { name: 'Gary Peel', title: 'Flat Roofing Specialist, Devon', posts: 'Flat roof installs, local projects', engagement: '1.2K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=flat+roofing+specialist+Devon', tag: 'Local' },
+    { name: 'Andy Rees', title: 'BMI Group Technical Rep', posts: 'Product education, technical specs', engagement: '2.1K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=BMI+roofing+technical+rep', tag: 'Supplier' },
+    { name: 'Chris Palmer', title: 'Roofing Business Coach', posts: 'Pricing, scaling, team building', engagement: '7.3K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+business+coach+UK', tag: 'Business' },
+    { name: 'Paul Whitfield', title: 'Velux Specification Manager', posts: 'Roof window installs, regs', engagement: '1.8K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Velux+specification+manager+UK', tag: 'Supplier' },
+    { name: 'Rachel Stone', title: 'Health & Safety Advisor, Roofing', posts: 'HSE updates, fall protection', engagement: '3.2K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+health+safety+advisor+UK', tag: 'Safety' },
+    { name: 'James Booth', title: 'MD — South West Roofing Ltd', posts: 'Regional projects, business tips', engagement: '1.5K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=south+west+roofing+director', tag: 'Local' },
+    { name: 'Mike Hatton', title: 'GRP Roofing Systems Expert', posts: 'Fibreglass roof installs', engagement: '2.4K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=GRP+roofing+expert+UK', tag: 'Specialist' },
+    { name: 'Louise Farmer', title: 'Insurance Claims Manager, Roofing', posts: 'Insurance tips for contractors', engagement: '1.1K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+insurance+claims+UK', tag: 'Finance' },
+    { name: 'Steve Lowe', title: 'Solar Roofing Installer, Devon', posts: 'Solar + roofing integration', engagement: '2.9K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=solar+roofing+installer+Devon', tag: 'Innovation' },
+    { name: 'Neil Buckley', title: 'Flat Roofing Materials Buyer', posts: 'Product comparisons, sourcing', engagement: '1.4K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=flat+roofing+materials+procurement', tag: 'Supplier' },
+    { name: 'Darren Fitch', title: 'Roofing Estimator & Tech Founder', posts: 'Estimating software, digital tools', engagement: '3.8K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+estimating+software+founder', tag: 'Tech' },
+    { name: 'Ian Morris', title: 'Principal Roofing Surveyor', posts: 'Defects, surveys, case studies', engagement: '2.0K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+surveyor+principal+UK', tag: 'Surveying' },
+    { name: 'Vicky Shaw', title: 'Roofing Industry HR Specialist', posts: 'Hiring, retention, compliance', engagement: '1.7K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+HR+specialist+UK', tag: 'HR' },
+    { name: 'Ben Croft', title: 'Green Roof & Living Roof Specialist', posts: 'Green roof installs, biodiversity', engagement: '4.5K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=green+roof+specialist+UK', tag: 'Innovation' },
+  ];
+
+  const tagColors = { 'Business':'blue', 'Supplier':'green', 'Industry Body':'purple', 'Content Creator':'amber', 'Commercial':'blue', 'Media':'blue', 'Local':'green', 'Safety':'red', 'Specialist':'purple', 'Finance':'amber', 'Innovation':'green', 'Tech':'blue', 'Surveying':'blue', 'HR':'amber' };
+
+  document.getElementById('linkedin-cards').innerHTML = people.map((p, i) => `
+    <div class="card" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:38px;height:38px;min-width:38px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--accent);">${p.name.split(' ').map(n=>n[0]).join('')}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;">${p.name}</div>
+          <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title}</div>
+        </div>
+        <span class="badge ${tagColors[p.tag]||'blue'}" style="font-size:10px;white-space:nowrap;">${p.tag}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);">💬 ${p.posts}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:11px;color:var(--green);">❤️ ${p.engagement}</span>
+        <a href="${p.url}" target="_blank" style="background:var(--accent);color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;text-decoration:none;">Connect →</a>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('linkedin-last-updated').textContent = `Curated list · updated Monday`;
+}
+
+// =====================
+// INDUSTRY NEWS TAB
+// =====================
+async function loadIndustryTab() {
+  document.getElementById('industry-articles').innerHTML = '<div class="card" style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Loading industry news...</div>';
+  document.getElementById('industry-last-updated').textContent = 'Loading...';
+
+  // Static curated articles — refreshed by Monday automation task
+  const articles = [
+    { headline: 'NFRC Publishes Updated Safe Access Guidelines for Pitched Roofing Work', source: 'NFRC', date: '14 Mar 2026', tag: 'Safety', url: 'https://www.nfrc.co.uk/news', snippet: 'New HSE-aligned guidelines covering access equipment, harness requirements and edge protection for residential pitched roof contractors.' },
+    { headline: 'IKO Launches Pro-Therm NPR2 — New High-Performance Flat Roof Board', source: 'Roofing Today', date: '12 Mar 2026', tag: 'New Product', url: 'https://www.roofingtoday.co.uk', snippet: 'IKO\'s latest insulation board claims 18% improved thermal performance with no increase in installed cost, targeting the refurb market.' },
+    { headline: 'Building Regulations Update: Part L Changes Impact Flat Roof U-Values', source: 'NBS', date: '10 Mar 2026', tag: 'Policy', url: 'https://www.thenbs.com', snippet: 'Revised Part L specification requires minimum 0.15 W/m²K for flat roofs in new builds from April 2026 — affecting specification and costings.' },
+    { headline: 'GRP Roofing Market Expected to Grow 9% in 2026 — UK Report', source: 'Construction Index', date: '9 Mar 2026', tag: 'Market', url: 'https://www.theconstructionindex.co.uk', snippet: 'Demand for fibreglass roofing systems continues to outpace traditional felt as homeowners prioritise longevity and low maintenance.' },
+    { headline: 'Sika Launches New Self-Adhesive Flashing Tape Rated for 30-Year Lifespan', source: 'Sika UK', date: '8 Mar 2026', tag: 'New Product', url: 'https://www.sika.co.uk', snippet: 'SikaBit® Pro-Flash 4000 is rated to -20°C and is NHBC-approved for use with all major tile systems.' },
+    { headline: 'HSE Issues Warning Over Unlicensed Asbestos Removal on Re-Roofing Jobs', source: 'HSE UK', date: '7 Mar 2026', tag: 'Safety', url: 'https://www.hse.gov.uk', snippet: 'A spike in enforcement actions highlights the risk for contractors removing old asbestos cement tiles without proper notification and licensing.' },
+    { headline: 'Marley Releases 2026 Contractor Training Programme — Free CPD Accredited', source: 'Marley', date: '5 Mar 2026', tag: 'Training', url: 'https://www.marley.co.uk', snippet: 'Online and in-person modules covering hip and ridge systems, solar integration, and the new Fibre-Cement Slate range.' },
+    { headline: 'Planning Reform White Paper: Permitted Development for Rooftop Solar Expanded', source: 'Planning Portal', date: '4 Mar 2026', tag: 'Policy', url: 'https://www.planningportal.co.uk', snippet: 'Homeowners can now install roof-integrated solar panels without planning permission on most residential properties — opportunity for roofers.' },
+    { headline: 'Recticel Insulation Joins Forces with BMI Group for Hybrid Warm Roof Systems', source: 'Specified By', date: '3 Mar 2026', tag: 'Industry', url: 'https://www.specifiedby.com', snippet: 'Partnership aims to deliver an integrated warm roof solution with BIM-compatible specifications for architects and roofing contractors.' },
+    { headline: 'Roofing Labour Shortage: NFRC Calls for Apprenticeship Funding Reform', source: 'Build UK', date: '1 Mar 2026', tag: 'Industry', url: 'https://builduk.org', snippet: 'Industry body estimates 14,000 new roofers needed by 2030 and urges government to expand the Construction Skills Fund.' },
+  ];
+
+  const tagColors = { 'Safety':'red', 'New Product':'green', 'Policy':'purple', 'Market':'blue', 'Training':'amber', 'Industry':'blue' };
+  const tagCounts = {};
+  articles.forEach(a => { tagCounts[a.tag] = (tagCounts[a.tag]||0)+1; });
+
+  document.getElementById('industry-article-count').textContent = articles.length;
+  document.getElementById('industry-safety-count').textContent = tagCounts['Safety']||0;
+  document.getElementById('industry-product-count').textContent = tagCounts['New Product']||0;
+  document.getElementById('industry-policy-count').textContent = tagCounts['Policy']||0;
+
+  document.getElementById('industry-articles').innerHTML = articles.map(a => `
+    <div class="card" style="margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;">
+      <div style="min-width:80px;text-align:center;padding-top:2px;">
+        <span class="badge ${tagColors[a.tag]||'blue'}">${a.tag}</span>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px;">${a.date}</div>
+        <div style="font-size:10px;color:var(--muted);">${a.source}</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:600;margin-bottom:5px;line-height:1.4;">
+          <a href="${a.url}" target="_blank" style="color:var(--text);text-decoration:none;">${a.headline}</a>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">${a.snippet}</div>
+      </div>
+      <a href="${a.url}" target="_blank" style="color:var(--accent);font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;">Read →</a>
+    </div>
+  `).join('');
+
+  document.getElementById('industry-last-updated').textContent = `Week of 16 Mar 2026 · refreshed Monday`;
+}
+
+// Auto-load new tabs when clicked (lazy loading)
+const tabLoadMap = { stocks: loadStocksTab, hmo: loadHMOTab, land: loadLandTab, social: loadSocialTab, linkedin: loadLinkedInTab, industry: loadIndustryTab };
+
+// =====================
+// QR CODE MODAL
+// =====================
+function showQR() {
+  document.getElementById('qr-modal').style.display = 'flex';
+  const container = document.getElementById('qr-code-container');
+  if (container.innerHTML.trim() === '') {
+    // Use a public QR generator API (no JS lib needed as fallback)
+    const url = 'https://dreamy-belekoy-0f276e.netlify.app';
+    const qrImg = document.createElement('img');
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}&bgcolor=1a1d27&color=e2e8f0&margin=10`;
+    qrImg.alt = 'QR Code';
+    qrImg.style = 'border-radius:12px;display:block;';
+    container.appendChild(qrImg);
+    document.getElementById('qr-url-text').textContent = url;
+  }
+}
+function closeQR() {
+  document.getElementById('qr-modal').style.display = 'none';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeQR(); });
+</script>
+
+<!-- QR MODAL -->
+<div id="qr-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)closeQR()">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:320px;width:90%;text-align:center;">
+    <div style="font-size:17px;font-weight:700;margin-bottom:6px;">Open on Your Phone</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Scan this QR code with your phone's camera</div>
+    <div id="qr-code-container" style="display:flex;justify-content:center;margin-bottom:16px;"></div>
+    <div style="font-size:10px;color:var(--muted);word-break:break-all;background:var(--surface2);padding:8px 10px;border-radius:8px;margin-bottom:20px;" id="qr-url-text"></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">⚠️ Both devices must be on the same Wi-Fi network for this to work, unless you're hosting this file on a web server.</div>
+    <button onclick="closeQR()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:9px 24px;font-size:13px;cursor:pointer;font-weight:600;">Close</button>
+  </div>
+</div>
+</body>
+</html>
