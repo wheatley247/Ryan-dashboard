@@ -1728,7 +1728,7 @@ function showQR() {
   const container = document.getElementById('qr-code-container');
   if (container.innerHTML.trim() === '') {
     // Use a public QR generator API (no JS lib needed as fallback)
-    const url = 'https://dreamy-belekoy-0f276e.netlify.app';
+    const url = 'https://effortless-meringue-0c8415.netlify.app';
     const qrImg = document.createElement('img');
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}&bgcolor=1a1d27&color=e2e8f0&margin=10`;
     qrImg.alt = 'QR Code';
