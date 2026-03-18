@@ -1585,51 +1585,47 @@ async function loadLinkedInTab() {
   document.getElementById('linkedin-last-updated').textContent = 'Loading...';
   document.getElementById('linkedin-cards').innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);">Loading LinkedIn suggestions...</div>';
 
-  // Curated list — refreshed by Monday automation
-  const people = [
-    { name: 'John Mercer', title: 'MD — Northern Roofing Contractors', posts: 'Posts about roofing business growth', engagement: '4.2K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=John+Mercer+roofing+director', tag: 'Business' },
-    { name: 'Sarah Hodgkins', title: 'Specification Manager at SIG Roofing', posts: 'New product launches & specs', engagement: '2.8K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Sarah+Hodgkins+SIG+roofing', tag: 'Supplier' },
-    { name: 'Mark Tanner', title: 'NFRC Technical Director', posts: 'Regulation updates, safety changes', engagement: '6.1K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Mark+Tanner+NFRC+roofing', tag: 'Industry Body' },
-    { name: 'Tom Ellis', title: 'Roofing Contractor & YouTuber', posts: 'Tutorials, site content', engagement: '3.5K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Tom+Ellis+roofing+contractor', tag: 'Content Creator' },
-    { name: 'Dave Holloway', title: 'Commercial Roofing Director', posts: 'Commercial project case studies', engagement: '1.9K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Dave+Holloway+commercial+roofing', tag: 'Commercial' },
-    { name: 'Helen Cross', title: 'Roofing Industry Journalist', posts: 'Industry news, product reviews', engagement: '5.0K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Helen+Cross+roofing+journalist', tag: 'Media' },
-    { name: 'Gary Peel', title: 'Flat Roofing Specialist, Devon', posts: 'Flat roof installs, local projects', engagement: '1.2K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Gary+Peel+flat+roofing+Devon', tag: 'Local' },
-    { name: 'Andy Rees', title: 'BMI Group Technical Rep', posts: 'Product education, technical specs', engagement: '2.1K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Andy+Rees+BMI+roofing', tag: 'Supplier' },
-    { name: 'Chris Palmer', title: 'Roofing Business Coach', posts: 'Pricing, scaling, team building', engagement: '7.3K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Chris+Palmer+roofing+business+coach', tag: 'Business' },
-    { name: 'Paul Whitfield', title: 'Velux Specification Manager', posts: 'Roof window installs, regs', engagement: '1.8K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Paul+Whitfield+Velux+specification', tag: 'Supplier' },
-    { name: 'Rachel Stone', title: 'Health & Safety Advisor, Roofing', posts: 'HSE updates, fall protection', engagement: '3.2K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Rachel+Stone+roofing+health+safety', tag: 'Safety' },
-    { name: 'James Booth', title: 'MD — South West Roofing Ltd', posts: 'Regional projects, business tips', engagement: '1.5K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=James+Booth+south+west+roofing', tag: 'Local' },
-    { name: 'Mike Hatton', title: 'GRP Roofing Systems Expert', posts: 'Fibreglass roof installs', engagement: '2.4K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Mike+Hatton+GRP+roofing', tag: 'Specialist' },
-    { name: 'Louise Farmer', title: 'Insurance Claims Manager, Roofing', posts: 'Insurance tips for contractors', engagement: '1.1K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Louise+Farmer+roofing+insurance', tag: 'Finance' },
-    { name: 'Steve Lowe', title: 'Solar Roofing Installer, Devon', posts: 'Solar + roofing integration', engagement: '2.9K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Steve+Lowe+solar+roofing+Devon', tag: 'Innovation' },
-    { name: 'Neil Buckley', title: 'Flat Roofing Materials Buyer', posts: 'Product comparisons, sourcing', engagement: '1.4K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Neil+Buckley+flat+roofing+materials', tag: 'Supplier' },
-    { name: 'Darren Fitch', title: 'Roofing Estimator & Tech Founder', posts: 'Estimating software, digital tools', engagement: '3.8K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Darren+Fitch+roofing+estimating', tag: 'Tech' },
-    { name: 'Ian Morris', title: 'Principal Roofing Surveyor', posts: 'Defects, surveys, case studies', engagement: '2.0K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Ian+Morris+roofing+surveyor', tag: 'Surveying' },
-    { name: 'Vicky Shaw', title: 'Roofing Industry HR Specialist', posts: 'Hiring, retention, compliance', engagement: '1.7K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Vicky+Shaw+roofing+HR', tag: 'HR' },
-    { name: 'Ben Croft', title: 'Green Roof & Living Roof Specialist', posts: 'Green roof installs, biodiversity', engagement: '4.5K likes/wk', url: 'https://www.linkedin.com/search/results/people/?keywords=Ben+Croft+green+roof+specialist', tag: 'Innovation' },
+  // Each entry links to a real LinkedIn people search — opens in LinkedIn app on mobile
+  const searches = [
+    { role: 'Roofing Company Director', tag: 'Business', icon: '🏢', why: 'Network with other roofing MDs to share pricing, strategy and subcontractor referrals', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+company+director+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'SIG Roofing Representative', tag: 'Supplier', icon: '🔧', why: 'Connect with SIG reps for product training, discount accounts and new product launches', url: 'https://www.linkedin.com/search/results/people/?keywords=SIG+roofing+representative&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'NFRC Technical Manager', tag: 'Industry Body', icon: '📋', why: 'Stay ahead of regulation changes and access technical guidance direct from the source', url: 'https://www.linkedin.com/search/results/people/?keywords=NFRC+roofing+technical+manager&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Flat Roofing Contractor Devon', tag: 'Local', icon: '📍', why: 'Find local Devon contractors for subcontracting, referrals and partnerships', url: 'https://www.linkedin.com/search/results/people/?keywords=flat+roofing+contractor+Devon&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Commercial Roofing Director', tag: 'Commercial', icon: '🏗️', why: 'Build relationships with commercial sector directors for large project referrals', url: 'https://www.linkedin.com/search/results/people/?keywords=commercial+roofing+director+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'BMI Roofing Technical Rep', tag: 'Supplier', icon: '🔧', why: 'Get direct access to BMI product support, spec sheets and contractor pricing', url: 'https://www.linkedin.com/search/results/people/?keywords=BMI+roofing+technical+representative&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Roofing Business Coach UK', tag: 'Growth', icon: '📈', why: 'Learn from coaches helping roofing companies scale their operations and pricing', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+business+coach+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'HSE Roofing Safety Advisor', tag: 'Safety', icon: '🦺', why: 'Stay informed on HSE updates, fall protection requirements and compliance changes', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+health+safety+advisor+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'GRP Fibreglass Roofing Specialist', tag: 'Specialist', icon: '🧱', why: 'Connect with GRP specialists for technical knowledge sharing and subcontracting', url: 'https://www.linkedin.com/search/results/people/?keywords=GRP+fibreglass+roofing+specialist+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Velux UK Specification Manager', tag: 'Supplier', icon: '🔧', why: 'Build relationships with Velux reps for roof window project support and specs', url: 'https://www.linkedin.com/search/results/people/?keywords=Velux+specification+manager+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Solar Roofing Installer UK', tag: 'Innovation', icon: '☀️', why: 'Explore solar integration partnerships as demand for solar roofing grows rapidly', url: 'https://www.linkedin.com/search/results/people/?keywords=solar+roofing+installer+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Roofing Estimating Software Founder', tag: 'Tech', icon: '💻', why: 'Connect with tech founders building tools for roofing businesses to improve efficiency', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+estimating+software+founder&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Principal Roofing Surveyor UK', tag: 'Surveying', icon: '📐', why: 'Surveyors can refer defect remediation and re-roofing work directly to contractors', url: 'https://www.linkedin.com/search/results/people/?keywords=principal+roofing+surveyor+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Green Roof Specialist UK', tag: 'Innovation', icon: '🌿', why: 'Growing market — connect with green roof specialists for partnership opportunities', url: 'https://www.linkedin.com/search/results/people/?keywords=green+roof+living+roof+specialist+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Lead Roofing Specialist UK', tag: 'Specialist', icon: '🏛️', why: 'Relevant to Custom Lead — connect with lead roofing specialists and installers', url: 'https://www.linkedin.com/search/results/people/?keywords=lead+roofing+specialist+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Construction Project Manager Devon', tag: 'Local', icon: '📍', why: 'Local project managers who can commission roofing work on new builds and refurbs', url: 'https://www.linkedin.com/search/results/people/?keywords=construction+project+manager+Devon+North+Devon&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Roofing Industry Journalist', tag: 'Media', icon: '📰', why: 'Get SNR Roofing featured in trade press and industry publications', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+industry+journalist+editor+UK&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Property Developer North Devon', tag: 'Local', icon: '📍', why: 'Developers need roofing contractors on every project — high-value repeat business', url: 'https://www.linkedin.com/search/results/people/?keywords=property+developer+North+Devon+Barnstaple&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Marley Roofing Technical Rep', tag: 'Supplier', icon: '🔧', why: 'Connect with Marley reps for pitched roof system specs, training and pricing', url: 'https://www.linkedin.com/search/results/people/?keywords=Marley+roofing+technical+representative&origin=GLOBAL_SEARCH_HEADER' },
+    { role: 'Roofing Insurance Specialist', tag: 'Finance', icon: '💼', why: 'Specialist insurance brokers can improve cover and reduce premiums for your fleet and workforce', url: 'https://www.linkedin.com/search/results/people/?keywords=roofing+contractor+insurance+specialist+UK&origin=GLOBAL_SEARCH_HEADER' },
   ];
 
-  const tagColors = { 'Business':'blue', 'Supplier':'green', 'Industry Body':'purple', 'Content Creator':'amber', 'Commercial':'blue', 'Media':'blue', 'Local':'green', 'Safety':'red', 'Specialist':'purple', 'Finance':'amber', 'Innovation':'green', 'Tech':'blue', 'Surveying':'blue', 'HR':'amber' };
+  const tagColors = { 'Business':'blue', 'Supplier':'green', 'Industry Body':'purple', 'Growth':'amber', 'Commercial':'blue', 'Media':'blue', 'Local':'green', 'Safety':'red', 'Specialist':'purple', 'Finance':'amber', 'Innovation':'green', 'Tech':'blue', 'Surveying':'blue' };
 
-  document.getElementById('linkedin-cards').innerHTML = people.map((p, i) => `
+  document.getElementById('linkedin-cards').innerHTML = searches.map((s) => `
     <div class="card" style="display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:38px;height:38px;min-width:38px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--accent);">${p.name.split(' ').map(n=>n[0]).join('')}</div>
+        <div style="width:38px;height:38px;min-width:38px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">${s.icon}</div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:600;">${p.name}</div>
-          <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title}</div>
+          <div style="font-size:13px;font-weight:600;">${s.role}</div>
+          <span class="badge ${tagColors[s.tag]||'blue'}" style="font-size:10px;">${s.tag}</span>
         </div>
-        <span class="badge ${tagColors[p.tag]||'blue'}" style="font-size:10px;white-space:nowrap;">${p.tag}</span>
       </div>
-      <div style="font-size:12px;color:var(--muted);">💬 ${p.posts}</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-size:11px;color:var(--green);">❤️ ${p.engagement}</span>
-        <a href="${p.url}" target="_blank" data-liurl="${p.url}" onclick="event.preventDefault();var u=this.getAttribute('data-liurl');var app=u.replace('https://www.linkedin.com','linkedin://');var t=setTimeout(function(){window.open(u,'_blank');},600);window.location.href=app;" style="background:var(--accent);color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;text-decoration:none;">Connect →</a>
-      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;">💡 ${s.why}</div>
+      <a href="${s.url}" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;text-decoration:none;margin-top:2px;">Search LinkedIn →</a>
     </div>
   `).join('');
 
-  document.getElementById('linkedin-last-updated').textContent = `Curated list · updated Monday`;
+  document.getElementById('linkedin-last-updated').textContent = `20 curated searches · opens LinkedIn app`;
 }
 
 // =====================
