@@ -1579,79 +1579,55 @@ async function loadSocialTab() {
 }
 
 // =====================
-// LINKEDIN TAB — powered by Apollo.io
+// LINKEDIN TAB — weekly contacts via Apollo.io
+// Refreshed every Monday by automation task. Zero API calls on page load.
 // =====================
-async function loadLinkedInTab() {
-  const APOLLO_KEY = 'o8e7oAE0iQRqjI-2znEMyg';
-  document.getElementById('linkedin-last-updated').textContent = 'Fetching from Apollo.io...';
-  document.getElementById('linkedin-cards').innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);">🔄 Pulling this week\'s roofing contacts from Apollo...</div>';
+function loadLinkedInTab() {
 
-  try {
-    // Step 1: Search for roofing people in UK
-    const searchRes = await fetch('https://api.apollo.io/api/v1/mixed_people/api_search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Api-Key': APOLLO_KEY },
-      body: JSON.stringify({
-        person_titles: ['roofing director', 'roofing manager', 'roofing contractor', 'managing director roofing', 'roofing owner', 'roofing specialist', 'roofing estimator', 'roofing surveyor', 'roofing consultant', 'flat roofing specialist', 'commercial roofing manager'],
-        person_locations: ['United Kingdom'],
-        page: 1,
-        per_page: 20
-      })
-    });
-    const searchData = await searchRes.json();
-    const ids = (searchData.people || []).map(p => p.id).filter(Boolean);
+  // ── WEEKLY CONTACTS — replaced every Monday by automation ──
+  const WEEK_OF = 'w/c 16 Mar 2026';
+  const contacts = [
+    { name: 'Peter Cook',     title: 'Roofing Contractor',              company: 'M & C Roofing Contractors Ltd',       city: 'Newcastle upon Tyne', linkedin: 'https://www.linkedin.com/in/peter-cook-2a7066221' },
+    { name: 'Billy Short',    title: 'Roofing Contractor',              company: 'RNW Group Ltd',                       city: 'Coulsdon',            linkedin: 'https://www.linkedin.com/in/billy-short-564a08107' },
+    { name: 'Corey Quinn',    title: 'Roofing Contractor',              company: 'TGM: Protect. Preserve. Perform.',    city: 'Seaton Delaval',      linkedin: 'https://www.linkedin.com/in/corey-quinn-9b474521a' },
+    { name: 'Mike Wells',     title: 'Roofing Contractor',              company: 'Atlas Roofing Corporation',           city: 'Bristol',             linkedin: 'https://www.linkedin.com/in/mike-wells-75b117114' },
+    { name: 'Chris Holland',  title: 'Roofing Contractor',              company: 'Holland Roofing',                     city: 'West Kilbride',       linkedin: 'https://www.linkedin.com/in/chris-holland-81b772138' },
+    { name: 'Thomas Lowrie',  title: 'Roofing Contractor',              company: 'Blackleaf Roofing Ltd',               city: 'Mayland',             linkedin: 'https://www.linkedin.com/in/thomas-lowrie-05ba5b289' },
+    { name: 'Dion Osbourne',  title: 'Roofing Contractor',              company: 'DO Roofing Ltd',                      city: 'Watford',             linkedin: 'https://www.linkedin.com/in/dionosbourne' },
+    { name: 'Trevor Lamb',    title: 'Roofing Contractor',              company: 'TL Roofing',                          city: 'Norwich',             linkedin: 'https://www.linkedin.com/in/trevor-lamb-ab7a2a8a' },
+    { name: 'Adam Dixon',     title: 'Roofing Contractor',              company: 'John Flowers Ltd',                    city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/adam-dixon-704455233' },
+    { name: 'Joe Sparrowhawk',title: 'Roofing Contractor',              company: 'GWS Roofing',                         city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/joe-sparrowhawk-bsc-hons-aior-5486a11a5' },
+    { name: 'Lee Dickenson',  title: 'Roofing Contractor',              company: 'Premier Roofing & Construction Ltd',  city: 'Kingston upon Thames',linkedin: 'https://www.linkedin.com/in/lee-dickenson-53b052260' },
+    { name: 'Craig Turner',   title: 'Roofing Contractor',              company: 'Turner Roofing',                      city: 'Thornaby',            linkedin: 'https://www.linkedin.com/in/craig-turner-827428107' },
+    { name: 'Joseph Wilson',  title: 'Roofing Contractor',              company: 'Roofdec Ltd',                         city: 'Liverpool',           linkedin: 'https://www.linkedin.com/in/joseph-wilson-1b4b7914a' },
+    { name: 'Scott Miles',    title: 'Roofing Contractor',              company: 'Scott Miles Roofing Ltd',             city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/scott-miles-0a042b137' },
+    { name: 'Sean Daniels',   title: 'Roofing Contractor',              company: 'Daniels Roofing',                     city: 'London',              linkedin: 'https://www.linkedin.com/in/sean-daniels-054549a4' },
+    { name: 'Matty Freeman',  title: 'Roofing Contractor',              company: 'MDL Roofing Ltd',                     city: 'Northampton',         linkedin: 'https://www.linkedin.com/in/matty-freeman-69b22a159' },
+    { name: 'Scott Wilks',    title: 'Roofing Contractor',              company: 'Aspire Roofing Services Northern Ltd', city: 'Bishop Auckland',    linkedin: 'https://www.linkedin.com/in/scott-wilks-6885732a9' },
+    { name: 'Sam Morrison',   title: 'Roofing Contractor',              company: 'SM Roofing',                          city: 'Colchester',          linkedin: 'https://www.linkedin.com/in/sam-morrison-140255100' },
+    { name: 'B Doble',        title: 'Roofing Contractor',              company: 'Advanced ChemDry',                    city: 'Taunton',             linkedin: 'https://www.linkedin.com/in/b-doble-aa712866' },
+    { name: 'Evergreen Roofing', title: 'Roofing Contractor',           company: 'Evergreen Roofing',                   city: 'Croydon',             linkedin: 'https://www.linkedin.com/in/evergreen-power-roofing-b6b22521a' },
+  ];
+  // ── END WEEKLY CONTACTS ──
 
-    if (!ids.length) throw new Error('No results from Apollo search');
-
-    // Step 2: Enrich each person to get full name + LinkedIn URL
-    const enriched = [];
-    for (const id of ids) {
-      try {
-        const enrichRes = await fetch('https://api.apollo.io/api/v1/people/match', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Api-Key': APOLLO_KEY },
-          body: JSON.stringify({ id })
-        });
-        const enrichData = await enrichRes.json();
-        const p = enrichData.person || {};
-        const name = [p.first_name, p.last_name].filter(Boolean).join(' ');
-        const linkedin = p.linkedin_url || '';
-        const title = p.title || '';
-        const company = (p.organization || {}).name || '';
-        const city = p.city || '';
-        if (name && linkedin) {
-          enriched.push({ name, title, company, linkedin, city });
-        }
-      } catch(e) { /* skip failed enrichments */ }
-    }
-
-    if (!enriched.length) throw new Error('Enrichment returned no usable contacts');
-
-    // Step 3: Render cards
-    document.getElementById('linkedin-cards').innerHTML = enriched.map(p => {
-      const initials = p.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
-      const liUrl = p.linkedin.startsWith('http') ? p.linkedin : 'https://' + p.linkedin;
-      return `
-        <div class="card" style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:40px;height:40px;min-width:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;">${initials}</div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;font-weight:600;">${p.name}</div>
-              <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title}${p.company ? ' · ' + p.company : ''}</div>
-            </div>
+  document.getElementById('linkedin-cards').innerHTML = contacts.map((p, i) => {
+    const initials = p.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+    return `
+      <div class="card" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:40px;height:40px;min-width:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;">${initials}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;">${p.name}</div>
+            <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title} · ${p.company}</div>
           </div>
-          ${p.city ? `<div style="font-size:11px;color:var(--muted);">📍 ${p.city}</div>` : ''}
-          <a href="${liUrl}" target="_blank" style="display:block;text-align:center;background:#0077b5;color:white;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;text-decoration:none;margin-top:2px;">View on LinkedIn →</a>
-        </div>`;
-    }).join('');
+          <span style="font-size:10px;color:var(--muted);white-space:nowrap;">#${i+1}</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);">📍 ${p.city}</div>
+        <a href="${p.linkedin}" target="_blank" style="display:block;text-align:center;background:#0077b5;color:white;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;text-decoration:none;margin-top:2px;">View on LinkedIn →</a>
+      </div>`;
+  }).join('');
 
-    const now = new Date();
-    document.getElementById('linkedin-last-updated').textContent = `${enriched.length} real contacts via Apollo · ${now.toLocaleDateString('en-GB', {weekday:'short',day:'numeric',month:'short'})}`;
-
-  } catch(err) {
-    document.getElementById('linkedin-cards').innerHTML = `<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--red);">⚠️ Could not load contacts: ${err.message}</div>`;
-    document.getElementById('linkedin-last-updated').textContent = 'Error loading — check Apollo API key';
-  }
+  document.getElementById('linkedin-last-updated').textContent = `20 contacts · ${WEEK_OF} · via Apollo.io · refreshed Monday`;
 }
 
 // =====================
