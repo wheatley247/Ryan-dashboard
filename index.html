@@ -1398,13 +1398,14 @@ async function loadHMOTab() {
   document.getElementById('hmo-last-updated').textContent = 'Updated 23 Mar 2026';
 
   const properties = [
-    { address: 'Orchard Road, Newport, Barnstaple EX32', type: 'Terraced House', price: '£210,000', listed: 'Recently added', url: 'https://www.zoopla.co.uk/for-sale/details/72635276/' },
-    { address: 'EX31, Barnstaple', type: 'End of Terrace', price: '£260,000', listed: 'Recently added', url: 'https://www.zoopla.co.uk/for-sale/details/70341247/' },
-    { address: 'EX31 2JL, Barnstaple', type: 'Semi-Detached', price: '£349,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/169778243' },
-    { address: 'EX32, Barnstaple', type: 'Detached House', price: '£425,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/159648806' },
-    { address: 'Eastacombe, Barnstaple EX31', type: 'Bungalow', price: '£565,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/153532340' },
-    { address: 'EX31, Barnstaple (New Build)', type: 'Semi-Detached', price: '£349,000', listed: 'New Build', url: 'https://www.zoopla.co.uk/new-homes/property/barnstaple/' },
-    { address: 'Taw Wharf, Sticklepath EX31', type: 'Townhouse', price: '£410,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/property-for-sale/Barnstaple.html' },
+    { address: 'Pilton, Barnstaple, EX31 4JB', type: 'Detached House', price: '£345,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/169774145' },
+    { address: 'Pilton Street, Barnstaple, EX31', type: 'Terraced House', price: '£500,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/164544443' },
+    { address: 'Sticklepath Court, Tawstock, Barnstaple', type: 'Detached House', price: '£470,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/166510340' },
+    { address: 'Raleigh Road, Barnstaple, EX31', type: 'Detached House', price: '£450,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/171598448' },
+    { address: 'Evergreen Way, Mount Sandford Green, Barnstaple, EX32', type: 'Detached House', price: '£425,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/168810854' },
+    { address: 'Shorelands Road, Barnstaple', type: 'House', price: '£420,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/173267270' },
+    { address: 'Taw Wharf, Sticklepath, Barnstaple, EX31', type: 'House', price: '£410,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/172633784' },
+    { address: 'Cleave Road, Sticklepath, Barnstaple, EX31', type: 'House', price: '£400,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/161308523' },
   ];
   document.getElementById('hmo-cards').innerHTML = properties.map(p => `
     <div class="card">
@@ -1477,42 +1478,49 @@ async function loadLandTab() {
       </div>
     </div>
     <div id="land-curated-results">
-      <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);">Current North Devon Land Listings</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);">Current North Devon Land Listings — w/c 23 Mar 2026</div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
         <div class="card">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Development Site, Sticklepath — Barnstaple</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">6 x 2-bed bungalows with planning · GDV ~£2.25m</div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Knowle, Braunton — North Devon</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Outline planning consent for 20 dwellings incl. 6 affordable units · S106 discharged</div>
+          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£725,000</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge blue">20 Dwellings</span></div>
+          <a href="https://www.rightmove.co.uk/properties/172363244" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
+        </div>
+        <div class="card">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Old Bideford Road, Barnstaple, EX31 2PA</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Planning permission for 220 dwellings with 30% affordable housing and retail shop</div>
           <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">POA</div>
-          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge blue">Dev Site</span></div>
-          <a href="https://www.rightmove.co.uk/commercial-property-for-sale/find.html?locationIdentifier=REGION%5E274&propertyTypes=land&radius=5.0" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
+          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge purple">220 Units</span></div>
+          <a href="https://www.rightmove.co.uk/properties/169225988" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
         </div>
         <div class="card">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">North Lovacott, EX31 — Near Barnstaple</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">0.44 acres · Planning for 2 x 4/5-bed detached homes (2,500+ sq ft each)</div>
-          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£300,000</div>
-          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge amber">Listed Feb 2026</span></div>
-          <a href="https://www.rightmove.co.uk/commercial-property-for-sale/find.html?locationIdentifier=REGION%5E274&propertyTypes=land&radius=10.0" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Hollocombe, Chulmleigh, EX18 7QD</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Four individual building plots in stunning semi-rural location with countryside views</div>
+          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">From £195,000</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge blue">4 Plots</span></div>
+          <a href="https://www.rightmove.co.uk/properties/158099570" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
         </div>
         <div class="card">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Young Woodland, South-Facing Valley — North Devon</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">14.9 acres · Native deciduous trees · Direct road access</div>
-          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£85,000+</div>
-          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge blue">14.9 Acres</span><span class="badge amber">Check Planning</span></div>
-          <a href="https://www.rightmove.co.uk/property-for-sale/property-60796801.html" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View Listing →</a>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Mortehoe, Woolacombe — North Devon Coast</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Grand designs development site near North Devon coast · planning consent granted</div>
+          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£550,000</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge amber">Coastal Location</span></div>
+          <a href="https://www.rightmove.co.uk/properties/170581436" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
         </div>
         <div class="card">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Yarnscombe — Near Barnstaple, EX31</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">~15 acres · Full planning for 3-bed contemporary home</div>
-          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£297,500</div>
-          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge blue">~15 Acres</span></div>
-          <a href="https://www.rightmove.co.uk/commercial-property-for-sale/find.html?locationIdentifier=REGION%5E274&propertyTypes=land&radius=10.0" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">Search Rightmove →</a>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Swimbridge, Barnstaple — Rural Plot</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Rural building plot with consent for 4-bed residence, vineyard and 6.6 acres</div>
+          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£475,000</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge blue">6.6 Acres</span></div>
+          <a href="https://www.rightmove.co.uk/properties/166515194" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
         </div>
         <div class="card">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Tawstock — Near Barnstaple</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">0.85 acres · 2 modern barns · Pending conversion to 5 dwellings</div>
-          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£395,000</div>
-          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge amber">Planning Pending</span><span class="badge purple">5 Units</span></div>
-          <a href="https://www.rightmove.co.uk/commercial-property-for-sale/find.html?locationIdentifier=REGION%5E274&propertyTypes=land&radius=10.0" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">Search Rightmove →</a>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Cleave Park, Fremington — Near Barnstaple</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Rare development opportunity for 4 detached bungalows (age limit 55+)</div>
+          <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">£600,000</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;"><span class="badge green">Planning Granted</span><span class="badge purple">4 Bungalows</span></div>
+          <a href="https://www.rightmove.co.uk/properties/127802339" target="_blank" style="display:block;text-align:center;background:var(--accent);color:white;border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;">View on Rightmove →</a>
         </div>
       </div>
     </div>
@@ -1544,11 +1552,11 @@ async function loadSocialTab() {
   ];
 
   const trending = [
-    { title: 'Complete Flat Roof Installation — EPDM Step by Step (2026)', views: '156K', channel: 'Flat Roof Wizard', url: 'https://www.youtube.com/@FlatRoofWizard/videos', daysAgo: 4 },
-    { title: 'How to Fix a Leaking Flat Roof — Common Causes and Fixes', views: '112K', channel: 'Roofing Insights', url: 'https://www.youtube.com/@RoofingInsights/videos', daysAgo: 6 },
-    { title: 'Lead Flashing: Step-by-Step Chimney Flashing Tutorial', views: '78K', channel: 'Lead Codes UK', url: 'https://www.youtube.com/@LeadCodesUK/videos', daysAgo: 3 },
-    { title: 'UK Roofing Industry Update — March 2026 Trade News', views: '45K', channel: 'Pro Roofing TV', url: 'https://www.youtube.com/@ProRoofingTV/videos', daysAgo: 5 },
-    { title: 'New Part L Regulations: What Every Roofer Needs to Know', views: '38K', channel: 'NFRC Official', url: 'https://www.youtube.com/@NFRCRoofing/videos', daysAgo: 7 },
+    { title: 'Flat Roof EPDM Rubber Installation — Full Tutorial (UK)', views: '124K', channel: 'Flat Roof Wizard', url: 'https://www.youtube.com/@FlatRoofWizard/videos', daysAgo: 2 },
+    { title: 'UK Roofing Awards 2026 Finalists Revealed — Industry Reaction', views: '87K', channel: 'Roofing Insights', url: 'https://www.youtube.com/@RoofingInsights/videos', daysAgo: 4 },
+    { title: 'Lead Flashing Step Flashing Guide — Valley & Ridge Details', views: '61K', channel: 'Lead Codes UK', url: 'https://www.youtube.com/@LeadCodesUK/videos', daysAgo: 3 },
+    { title: 'Making Tax Digital — What Sole Trader Roofers Need to Know in 2026', views: '48K', channel: 'NFRC Official', url: 'https://www.youtube.com/@NFRCRoofing/videos', daysAgo: 6 },
+    { title: 'GRP Fibreglass vs EPDM Rubber Flat Roof — Which Wins in 2026?', views: '39K', channel: 'Pro Roofing TV', url: 'https://www.youtube.com/@ProRoofingTV/videos', daysAgo: 5 },
   ];
 
   document.getElementById('yt-channels').innerHTML = channels.map((c, i) => `
@@ -1587,25 +1595,26 @@ function loadLinkedInTab() {
   // ── WEEKLY CONTACTS — replaced every Monday by automation ──
   const WEEK_OF = 'w/c 23 Mar 2026';
   const contacts = [
-    { name: 'Peter Cook',        title: 'Roofing Contractor',  company: 'M & C Roofing Contractors Ltd',        city: 'Newcastle upon Tyne',  linkedin: 'https://www.linkedin.com/in/peter-cook-2a7066221' },
-    { name: 'Corey Quinn',       title: 'Roofing Contractor',  company: 'TGM: Protect. Preserve. Perform.',     city: 'Seaton Delaval',        linkedin: 'https://www.linkedin.com/in/corey-quinn-9b474521a' },
-    { name: 'Billy Short',       title: 'Roofing Contractor',  company: 'RNW Group Ltd',                        city: 'Coulsdon',              linkedin: 'https://www.linkedin.com/in/billy-short-564a08107' },
-    { name: 'Trevor Lamb',       title: 'Roofing Contractor',  company: 'TL Roofing',                           city: 'Norwich',               linkedin: 'https://www.linkedin.com/in/trevor-lamb-ab7a2a8a' },
-    { name: 'Joe Sparrowhawk',   title: 'Roofing Contractor',  company: 'GWS Roofing',                          city: 'United Kingdom',        linkedin: 'https://www.linkedin.com/in/joe-sparrowhawk-bsc-hons-aior-5486a11a5' },
-    { name: 'Mike Wells',        title: 'Roofing Contractor',  company: 'Atlas Roofing Corporation',            city: 'Bristol',               linkedin: 'https://www.linkedin.com/in/mike-wells-75b117114' },
-    { name: 'Chris Holland',     title: 'Roofing Contractor',  company: 'Holland Roofing',                      city: 'West Kilbride',         linkedin: 'https://www.linkedin.com/in/chris-holland-81b772138' },
-    { name: 'Steve Lynam',       title: 'Roofing Contractor',  company: 'Garrison Roofing',                     city: 'Isfield',               linkedin: 'https://www.linkedin.com/in/steve-lynam-2126a363' },
-    { name: 'Thomas Lowrie',     title: 'Roofing Contractor',  company: 'Blackleaf Roofing Ltd',                city: 'Mayland',               linkedin: 'https://www.linkedin.com/in/thomas-lowrie-05ba5b289' },
-    { name: 'Adam Dixon',        title: 'Roofing Contractor',  company: 'John Flowers Ltd',                     city: 'England',               linkedin: 'https://www.linkedin.com/in/adam-dixon-704455233' },
-    { name: 'Evergreen Roofing', title: 'Roofing Contractor',  company: 'Evergreen Roofing',                    city: 'Croydon',               linkedin: 'https://www.linkedin.com/in/evergreen-power-roofing-b6b22521a' },
-    { name: 'Dion Osbourne',     title: 'Roofing Contractor',  company: 'DO Roofing Ltd',                       city: 'Watford',               linkedin: 'https://www.linkedin.com/in/dionosbourne' },
-    { name: 'Matty Freeman',     title: 'Roofing Contractor',  company: 'MDL Roofing Ltd',                      city: 'Northampton',           linkedin: 'https://www.linkedin.com/in/matty-freeman-69b22a159' },
-    { name: 'Scott Miles',       title: 'Roofing Contractor',  company: 'Scott Miles Roofing Ltd',              city: 'United Kingdom',        linkedin: 'https://www.linkedin.com/in/scott-miles-0a042b137' },
-    { name: 'Andrew Shepherd',   title: 'Roofing Contractor',  company: 'Bradley Services Ltd',                 city: 'Preston',               linkedin: 'https://www.linkedin.com/in/andrew-shepherd-5890a3177' },
-    { name: 'John Newlands',     title: 'Roofing Contractor',  company: 'Roof Repair Store',                    city: 'Paisley',               linkedin: 'https://www.linkedin.com/in/john-newlands-a8163266' },
-    { name: 'Sean Daniels',      title: 'Roofing Contractor',  company: 'Daniels Roofing',                      city: 'London',                linkedin: 'https://www.linkedin.com/in/sean-daniels-054549a4' },
-    { name: 'Lee Dickenson',     title: 'Roofing Contractor',  company: 'Premier Roofing & Construction Ltd',   city: 'Kingston upon Thames',  linkedin: 'https://www.linkedin.com/in/lee-dickenson-53b052260' },
-    { name: 'Mark Tyrie',        title: 'Roofing Contractor',  company: 'Hathaway',                             city: 'Bishop Auckland',       linkedin: 'https://www.linkedin.com/in/mark-tyrie-30261795' },
+    { name: 'Peter Cook',       title: 'Roofing Contractor', company: 'M & C Roofing Contractors Ltd',    city: 'Newcastle upon Tyne', linkedin: 'https://www.linkedin.com/in/peter-cook-2a7066221' },
+    { name: 'Corey Quinn',      title: 'Roofing Contractor', company: 'TGM: Protect. Preserve. Perform.', city: 'Seaton Delaval',      linkedin: 'https://www.linkedin.com/in/corey-quinn-9b474521a' },
+    { name: 'Billy Short',      title: 'Roofing Contractor', company: 'RNW GROUP LTD',                    city: 'Coulsdon',            linkedin: 'https://www.linkedin.com/in/billy-short-564a08107' },
+    { name: 'Trevor Lamb',      title: 'Roofing Contractor', company: 'TL Roofing',                       city: 'Norwich',             linkedin: 'https://www.linkedin.com/in/trevor-lamb-ab7a2a8a' },
+    { name: 'Mark Smith',       title: 'Roofing Contractor', company: 'Marley',                           city: 'East Kilbride',       linkedin: 'https://www.linkedin.com/in/mark-smith-75b812289' },
+    { name: 'Chris Holland',    title: 'Roofing Contractor', company: 'Holland Roofing',                  city: 'West Kilbride',       linkedin: 'https://www.linkedin.com/in/chris-holland-81b772138' },
+    { name: 'Joe Sparrowhawk',  title: 'Roofing Contractor', company: 'GWS Roofing',                      city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/joe-sparrowhawk-bsc-hons-aior-5486a11a5' },
+    { name: 'Mike Wells',       title: 'Roofing Contractor', company: 'Atlas Roofing Corporation',        city: 'Bristol',             linkedin: 'https://www.linkedin.com/in/mike-wells-75b117114' },
+    { name: 'Adam Dixon',       title: 'Roofing Contractor', company: 'John Flowers Ltd',                 city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/adam-dixon-704455233' },
+    { name: 'Scott Miles',      title: 'Roofing Contractor', company: 'SCOTT MILES ROOFING LTD',         city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/scott-miles-0a042b137' },
+    { name: 'Thomas Lowrie',    title: 'Roofing Contractor', company: 'Blackleaf Roofing Ltd',            city: 'Mayland',             linkedin: 'https://www.linkedin.com/in/thomas-lowrie-05ba5b289' },
+    { name: 'Evergreen Roofing',title: 'Roofing Contractor', company: 'Evergreen Roofing',               city: 'Croydon',             linkedin: 'https://www.linkedin.com/in/evergreen-power-roofing-b6b22521a' },
+    { name: 'Steve Lynam',      title: 'Roofing Contractor', company: 'Garrison Roofing',                 city: 'Isfield',             linkedin: 'https://www.linkedin.com/in/steve-lynam-2126a363' },
+    { name: 'Richard Gardner',  title: 'Roofing Contractor', company: 'Gardner Roofing LLP',              city: 'Gloucester',          linkedin: 'https://www.linkedin.com/in/richard-gardner-ba7191134' },
+    { name: 'Dion Contractor',  title: 'Roofing Contractor', company: 'DO ROOFING LTD',                  city: 'Watford',             linkedin: 'https://www.linkedin.com/in/dionosbourne' },
+    { name: 'Gary Bush',        title: 'Roofing Contractor', company: 'GB Roofing Ltd',                   city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/gary-bush-2363b4a2' },
+    { name: 'Liam Dooley',      title: 'Roofing Contractor', company: 'THE ROOFING CO (NW) LIMITED',     city: 'Stockport',           linkedin: 'https://www.linkedin.com/in/liam-dooley-36b776257' },
+    { name: 'Dan Nolan',        title: 'Roofing Contractor', company: 'Mummery Roofing',                  city: 'Bristol',             linkedin: 'https://www.linkedin.com/in/dan-nolan-88489967' },
+    { name: 'Craig Turner',     title: 'Roofing Contractor', company: 'Turner Roofing',                   city: 'Thornaby',            linkedin: 'https://www.linkedin.com/in/craig-turner-827428107' },
+    { name: 'Sean Daniels',     title: 'Roofing Contractor', company: 'Daniels Roofing',                  city: 'London',              linkedin: 'https://www.linkedin.com/in/sean-daniels-054549a4' },
   ];
   // ── END WEEKLY CONTACTS ──
 
@@ -1638,16 +1647,16 @@ async function loadIndustryTab() {
 
   // Static curated articles — refreshed by Monday automation task
   const articles = [
-    { headline: 'UK Roofing Awards 2026 Finalists Announced — Ceremony on 8 May at The O2', source: 'Roofing Today', date: '17 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/uk-roofing-awards-2026-finalists-announced/', snippet: 'Now in its 20th year, the UK Roofing Awards finalists have been revealed across all disciplines. The ceremony will be held at the Intercontinental London—The O2 on 8 May 2026. Industry Choice voting opens 19 March.' },
-    { headline: 'Construction Growth Held Back by Uncertainty — Output Forecast Cut to 1.7%', source: 'Roofing Today', date: '19 Mar 2026', tag: 'Market', url: 'https://roofingtoday.co.uk/construction-growth-held-back-by-uncertainty/', snippet: 'The CPA has downgraded its 2026 UK construction output growth forecast from 2.8% to 1.7% amid economic uncertainty, impacting new build and commercial roofing pipelines.' },
-    { headline: 'Data Shows Younger, More Skilled UK Construction Workforce in 2025', source: 'Roofing Today', date: '18 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/data-shows-younger-more-skilled-uk-construction-workforce/', snippet: 'CSCS data reveals more than 1 in 4 cardholders are now under 30, and the proportion of skilled/advanced workers has risen significantly year-on-year.' },
-    { headline: '£120bn Public Construction Framework to Open Soon — Major Opportunity for Roofing Contractors', source: 'Roofing Today', date: '20 Mar 2026', tag: 'Policy', url: 'https://roofingtoday.co.uk/120bn-public-construction-framework-to-open-soon/', snippet: 'A new national public construction procurement framework worth £120bn is set to launch, opening major public sector contract opportunities for roofing and envelope contractors.' },
-    { headline: 'Brecon Cathedral Secures £2m Heritage Grant for Urgent Reroof', source: 'Roofing Today', date: '14 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/brecon-cathedral-secures-2m-heritage-grant-for-urgent-reroof/', snippet: 'Work is due to start in March 2026 on the south transept roofs. The project involves sensitive heritage roofing work at one of Wales's most significant ecclesiastical buildings.' },
-    { headline: 'Six Weeks Left to Enter the 2026 SPRA Awards — Deadline 30 April', source: 'Roofing Today', date: '13 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/six-weeks-left-to-enter-the-2026-spra-awards/', snippet: 'The SPRA Awards celebrate achievements in the single ply roofing sector. Entries are open to SPRA members and deadline for project submissions is Thursday 30 April 2026.' },
-    { headline: 'Rooflight Association Named Official Partner of UK Construction Week 2026', source: 'Roofing Today', date: '12 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/rooflight-association-official-partner-of-uk-construction-week-2026/', snippet: 'The partnership will see rooflights prominently featured at UK Construction Week, highlighting the growing role of natural light in roofing and building envelope design.' },
-    { headline: 'Manufacturers Information Hub Launches to Support UK Roofing Specifiers', source: 'Roofing Today', date: '10 Mar 2026', tag: 'New Product', url: 'https://roofingtoday.co.uk/manufacturers-information-hub-launches-in-uk/', snippet: 'A new digital hub has launched giving roofing contractors and specifiers centralised access to product data, installation guides, BIM files and warranty information from leading UK manufacturers.' },
-    { headline: 'The Great British Slate Off Returns for 2026 — Nominations Now Open', source: 'Roofing Today', date: '8 Mar 2026', tag: 'Training', url: 'https://roofingtoday.co.uk/the-great-british-slate-off-returns-for-2026/', snippet: 'The popular craft roofing competition is back for 2026, celebrating skill in traditional slate and tile work. Nominations are open for contractors wanting to showcase their heritage roofing expertise.' },
-    { headline: 'UK Roofing Awards 2026: Which Projects Are Up for the Top Honours?', source: 'Total Contractor', date: '17 Mar 2026', tag: 'Industry', url: 'https://www.total-contractor.co.uk/uk-roofing-awards-2026-which-projects-are-up-for-the-top-honours/', snippet: 'Total Contractor reviews all the shortlisted projects across each award category, from single ply and liquid applied to heritage and green roofing — including the Murray Edwards College and Jersey Opera House projects.' },
+    { headline: 'UK Roofing Awards 2026 Finalists Announced', source: 'Roofing Today', date: '21 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/uk-roofing-awards-2026-finalists-announced/', snippet: 'Finalists confirmed across multiple disciplines — bituminous, cold-applied waterproofing, heritage, green roofing and solar. Awards ceremony 8 May at the Intercontinental London.' },
+    { headline: 'Construction Looks for Certainty Ahead of Spring Statement', source: 'Roofing Today', date: '20 Mar 2026', tag: 'Market', url: 'https://roofingtoday.co.uk/construction-looks-for-certainty-ahead-of-spring-statement/', snippet: 'Industry bodies urge Chancellor to use the Spring Statement to provide regulatory certainty and boost housebuilding amid revised 1.7% output growth forecast.' },
+    { headline: 'Geopolitical Unrest Clouds Outlook as Tender Prices Rise', source: 'Roofing Today', date: '19 Mar 2026', tag: 'Market', url: 'https://roofingtoday.co.uk/geopolitical-unrest-clouds-outlook-as-tender-prices-rise/', snippet: 'Supply chain pressures and international instability are pushing tender prices upward, with roofing materials among the most affected categories.' },
+    { headline: 'Construction Firm Fined After Teen Labourer\'s Fatal Fall', source: 'Roofing Today', date: '18 Mar 2026', tag: 'Safety', url: 'https://roofingtoday.co.uk/construction-firm-fined-after-teen-labourers-fatal-fall/', snippet: 'A roofing contractor has been handed a substantial fine following the death of a teenage labourer who fell from an unguarded roof edge — a stark reminder of access safety obligations.' },
+    { headline: 'Making Tax Digital: What Sole Traders Need to Know', source: 'Roofing Today', date: '17 Mar 2026', tag: 'Policy', url: 'https://roofingtoday.co.uk/making-tax-digital-what-sole-traders-need-to-know/', snippet: 'From April 2026, sole traders earning above £50,000 must file digitally. Roofing Today breaks down what contractors need to do now to comply.' },
+    { headline: 'RA Issues Revised Safety Guidance on Rooflight Covers', source: 'Roofing Today', date: '17 Mar 2026', tag: 'Safety', url: 'https://roofingtoday.co.uk/rooflight-association-issues-revised-safety-guidance-on-rooflight-covers/', snippet: 'The Rooflight Association has updated its guidance on cover specifications following a series of incidents involving inadequate rooflight protection on flat roofs.' },
+    { headline: 'Glidevale Protect Rolls Out Printed Roofing Membrane Guidance', source: 'Roofing Today', date: '16 Mar 2026', tag: 'New Product', url: 'https://roofingtoday.co.uk/glidevale-protect-rolls-out-printed-roofing-membrane-guidance/', snippet: 'New on-membrane printed installation instructions aim to reduce fitting errors and improve consistency across residential roofing projects.' },
+    { headline: 'Six Weeks Left to Enter the 2026 SPRA Awards', source: 'Roofing Today', date: '15 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/six-weeks-left-to-enter-the-2026-spra-awards/', snippet: 'The Single Ply Roofing Association is calling for entries ahead of the deadline. Categories cover commercial, industrial and residential single-ply projects.' },
+    { headline: 'Data Shows Younger, More Skilled UK Construction Workforce', source: 'Roofing Today', date: '14 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/data-shows-younger-more-skilled-uk-construction-workforce/', snippet: 'Over 25% of CSCS cards now held by under-30s — up from 17% in 2021. The shift indicates the apprenticeship push is gaining traction across the trades.' },
+    { headline: 'Rooflight Association Named Official Partner of UK Construction Week 2026', source: 'Roofing Today', date: '12 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/rooflight-association-official-partner-of-uk-construction-week-2026/', snippet: 'The partnership will see dedicated rooflight education sessions and product showcases at the flagship industry event later this year.' },
   ];
 
   const tagColors = { 'Safety':'red', 'New Product':'green', 'Policy':'purple', 'Market':'blue', 'Training':'amber', 'Industry':'blue' };
