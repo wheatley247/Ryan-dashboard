@@ -1395,16 +1395,16 @@ async function loadStocksTab() {
 // HMO RENTALS TAB
 // =====================
 async function loadHMOTab() {
-  document.getElementById('hmo-last-updated').textContent = 'Updated 18 Mar 2026';
+  document.getElementById('hmo-last-updated').textContent = 'Updated 23 Mar 2026';
 
   const properties = [
-    { address: 'EX32, Barnstaple', type: 'Terraced House', price: '£225,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/111151241' },
-    { address: 'EX31, Barnstaple', type: 'Detached House', price: '£250,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/159648806' },
-    { address: 'Newport, Barnstaple EX32', type: 'End of Terrace', price: '£250,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/165201893' },
-    { address: 'Newton Tracey, EX31', type: 'House', price: 'POA', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/164256722' },
-    { address: 'EX31, Barnstaple', type: 'Detached House', price: '£325,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/160682183' },
+    { address: 'Orchard Road, Newport, Barnstaple EX32', type: 'Terraced House', price: '£210,000', listed: 'Recently added', url: 'https://www.zoopla.co.uk/for-sale/details/72635276/' },
+    { address: 'EX31, Barnstaple', type: 'End of Terrace', price: '£260,000', listed: 'Recently added', url: 'https://www.zoopla.co.uk/for-sale/details/70341247/' },
     { address: 'EX31 2JL, Barnstaple', type: 'Semi-Detached', price: '£349,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/169778243' },
-    { address: 'EX32, Barnstaple', type: 'Link Detached', price: '£290,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/157403294' },
+    { address: 'EX32, Barnstaple', type: 'Detached House', price: '£425,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/159648806' },
+    { address: 'Eastacombe, Barnstaple EX31', type: 'Bungalow', price: '£565,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/properties/153532340' },
+    { address: 'EX31, Barnstaple (New Build)', type: 'Semi-Detached', price: '£349,000', listed: 'New Build', url: 'https://www.zoopla.co.uk/new-homes/property/barnstaple/' },
+    { address: 'Taw Wharf, Sticklepath EX31', type: 'Townhouse', price: '£410,000', listed: 'Recently added', url: 'https://www.rightmove.co.uk/property-for-sale/Barnstaple.html' },
   ];
   document.getElementById('hmo-cards').innerHTML = properties.map(p => `
     <div class="card">
@@ -1544,11 +1544,11 @@ async function loadSocialTab() {
   ];
 
   const trending = [
-    { title: 'How to Install a Flat Roof in 2026 — Step by Step', views: '142K', channel: 'Flat Roof Wizard', url: 'https://www.youtube.com/@FlatRoofWizard/videos', daysAgo: 3 },
-    { title: 'Common Roofing Mistakes and How to Avoid Them', views: '98K', channel: 'Roofing Insights', url: 'https://www.youtube.com/@RoofingInsights/videos', daysAgo: 5 },
-    { title: 'Lead Flashing Guide — Complete Installation Tutorial', views: '67K', channel: 'Lead Codes UK', url: 'https://www.youtube.com/@LeadCodesUK/videos', daysAgo: 2 },
-    { title: 'New UK Roofing Regulations You Must Know', views: '54K', channel: 'NFRC Official', url: 'https://www.youtube.com/@NFRCRoofing/videos', daysAgo: 7 },
-    { title: 'Best Felt Roofing Products 2026 Reviewed', views: '41K', channel: 'Pro Roofing TV', url: 'https://www.youtube.com/@ProRoofingTV/videos', daysAgo: 4 },
+    { title: 'Complete Flat Roof Installation — EPDM Step by Step (2026)', views: '156K', channel: 'Flat Roof Wizard', url: 'https://www.youtube.com/@FlatRoofWizard/videos', daysAgo: 4 },
+    { title: 'How to Fix a Leaking Flat Roof — Common Causes and Fixes', views: '112K', channel: 'Roofing Insights', url: 'https://www.youtube.com/@RoofingInsights/videos', daysAgo: 6 },
+    { title: 'Lead Flashing: Step-by-Step Chimney Flashing Tutorial', views: '78K', channel: 'Lead Codes UK', url: 'https://www.youtube.com/@LeadCodesUK/videos', daysAgo: 3 },
+    { title: 'UK Roofing Industry Update — March 2026 Trade News', views: '45K', channel: 'Pro Roofing TV', url: 'https://www.youtube.com/@ProRoofingTV/videos', daysAgo: 5 },
+    { title: 'New Part L Regulations: What Every Roofer Needs to Know', views: '38K', channel: 'NFRC Official', url: 'https://www.youtube.com/@NFRCRoofing/videos', daysAgo: 7 },
   ];
 
   document.getElementById('yt-channels').innerHTML = channels.map((c, i) => `
@@ -1585,28 +1585,27 @@ async function loadSocialTab() {
 function loadLinkedInTab() {
 
   // ── WEEKLY CONTACTS — replaced every Monday by automation ──
-  const WEEK_OF = 'w/c 16 Mar 2026';
+  const WEEK_OF = 'w/c 23 Mar 2026';
   const contacts = [
-    { name: 'Peter Cook',     title: 'Roofing Contractor',              company: 'M & C Roofing Contractors Ltd',       city: 'Newcastle upon Tyne', linkedin: 'https://www.linkedin.com/in/peter-cook-2a7066221' },
-    { name: 'Billy Short',    title: 'Roofing Contractor',              company: 'RNW Group Ltd',                       city: 'Coulsdon',            linkedin: 'https://www.linkedin.com/in/billy-short-564a08107' },
-    { name: 'Corey Quinn',    title: 'Roofing Contractor',              company: 'TGM: Protect. Preserve. Perform.',    city: 'Seaton Delaval',      linkedin: 'https://www.linkedin.com/in/corey-quinn-9b474521a' },
-    { name: 'Mike Wells',     title: 'Roofing Contractor',              company: 'Atlas Roofing Corporation',           city: 'Bristol',             linkedin: 'https://www.linkedin.com/in/mike-wells-75b117114' },
-    { name: 'Chris Holland',  title: 'Roofing Contractor',              company: 'Holland Roofing',                     city: 'West Kilbride',       linkedin: 'https://www.linkedin.com/in/chris-holland-81b772138' },
-    { name: 'Thomas Lowrie',  title: 'Roofing Contractor',              company: 'Blackleaf Roofing Ltd',               city: 'Mayland',             linkedin: 'https://www.linkedin.com/in/thomas-lowrie-05ba5b289' },
-    { name: 'Dion Osbourne',  title: 'Roofing Contractor',              company: 'DO Roofing Ltd',                      city: 'Watford',             linkedin: 'https://www.linkedin.com/in/dionosbourne' },
-    { name: 'Trevor Lamb',    title: 'Roofing Contractor',              company: 'TL Roofing',                          city: 'Norwich',             linkedin: 'https://www.linkedin.com/in/trevor-lamb-ab7a2a8a' },
-    { name: 'Adam Dixon',     title: 'Roofing Contractor',              company: 'John Flowers Ltd',                    city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/adam-dixon-704455233' },
-    { name: 'Joe Sparrowhawk',title: 'Roofing Contractor',              company: 'GWS Roofing',                         city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/joe-sparrowhawk-bsc-hons-aior-5486a11a5' },
-    { name: 'Lee Dickenson',  title: 'Roofing Contractor',              company: 'Premier Roofing & Construction Ltd',  city: 'Kingston upon Thames',linkedin: 'https://www.linkedin.com/in/lee-dickenson-53b052260' },
-    { name: 'Craig Turner',   title: 'Roofing Contractor',              company: 'Turner Roofing',                      city: 'Thornaby',            linkedin: 'https://www.linkedin.com/in/craig-turner-827428107' },
-    { name: 'Joseph Wilson',  title: 'Roofing Contractor',              company: 'Roofdec Ltd',                         city: 'Liverpool',           linkedin: 'https://www.linkedin.com/in/joseph-wilson-1b4b7914a' },
-    { name: 'Scott Miles',    title: 'Roofing Contractor',              company: 'Scott Miles Roofing Ltd',             city: 'United Kingdom',      linkedin: 'https://www.linkedin.com/in/scott-miles-0a042b137' },
-    { name: 'Sean Daniels',   title: 'Roofing Contractor',              company: 'Daniels Roofing',                     city: 'London',              linkedin: 'https://www.linkedin.com/in/sean-daniels-054549a4' },
-    { name: 'Matty Freeman',  title: 'Roofing Contractor',              company: 'MDL Roofing Ltd',                     city: 'Northampton',         linkedin: 'https://www.linkedin.com/in/matty-freeman-69b22a159' },
-    { name: 'Scott Wilks',    title: 'Roofing Contractor',              company: 'Aspire Roofing Services Northern Ltd', city: 'Bishop Auckland',    linkedin: 'https://www.linkedin.com/in/scott-wilks-6885732a9' },
-    { name: 'Sam Morrison',   title: 'Roofing Contractor',              company: 'SM Roofing',                          city: 'Colchester',          linkedin: 'https://www.linkedin.com/in/sam-morrison-140255100' },
-    { name: 'B Doble',        title: 'Roofing Contractor',              company: 'Advanced ChemDry',                    city: 'Taunton',             linkedin: 'https://www.linkedin.com/in/b-doble-aa712866' },
-    { name: 'Evergreen Roofing', title: 'Roofing Contractor',           company: 'Evergreen Roofing',                   city: 'Croydon',             linkedin: 'https://www.linkedin.com/in/evergreen-power-roofing-b6b22521a' },
+    { name: 'Peter Cook',        title: 'Roofing Contractor',  company: 'M & C Roofing Contractors Ltd',        city: 'Newcastle upon Tyne',  linkedin: 'https://www.linkedin.com/in/peter-cook-2a7066221' },
+    { name: 'Corey Quinn',       title: 'Roofing Contractor',  company: 'TGM: Protect. Preserve. Perform.',     city: 'Seaton Delaval',        linkedin: 'https://www.linkedin.com/in/corey-quinn-9b474521a' },
+    { name: 'Billy Short',       title: 'Roofing Contractor',  company: 'RNW Group Ltd',                        city: 'Coulsdon',              linkedin: 'https://www.linkedin.com/in/billy-short-564a08107' },
+    { name: 'Trevor Lamb',       title: 'Roofing Contractor',  company: 'TL Roofing',                           city: 'Norwich',               linkedin: 'https://www.linkedin.com/in/trevor-lamb-ab7a2a8a' },
+    { name: 'Joe Sparrowhawk',   title: 'Roofing Contractor',  company: 'GWS Roofing',                          city: 'United Kingdom',        linkedin: 'https://www.linkedin.com/in/joe-sparrowhawk-bsc-hons-aior-5486a11a5' },
+    { name: 'Mike Wells',        title: 'Roofing Contractor',  company: 'Atlas Roofing Corporation',            city: 'Bristol',               linkedin: 'https://www.linkedin.com/in/mike-wells-75b117114' },
+    { name: 'Chris Holland',     title: 'Roofing Contractor',  company: 'Holland Roofing',                      city: 'West Kilbride',         linkedin: 'https://www.linkedin.com/in/chris-holland-81b772138' },
+    { name: 'Steve Lynam',       title: 'Roofing Contractor',  company: 'Garrison Roofing',                     city: 'Isfield',               linkedin: 'https://www.linkedin.com/in/steve-lynam-2126a363' },
+    { name: 'Thomas Lowrie',     title: 'Roofing Contractor',  company: 'Blackleaf Roofing Ltd',                city: 'Mayland',               linkedin: 'https://www.linkedin.com/in/thomas-lowrie-05ba5b289' },
+    { name: 'Adam Dixon',        title: 'Roofing Contractor',  company: 'John Flowers Ltd',                     city: 'England',               linkedin: 'https://www.linkedin.com/in/adam-dixon-704455233' },
+    { name: 'Evergreen Roofing', title: 'Roofing Contractor',  company: 'Evergreen Roofing',                    city: 'Croydon',               linkedin: 'https://www.linkedin.com/in/evergreen-power-roofing-b6b22521a' },
+    { name: 'Dion Osbourne',     title: 'Roofing Contractor',  company: 'DO Roofing Ltd',                       city: 'Watford',               linkedin: 'https://www.linkedin.com/in/dionosbourne' },
+    { name: 'Matty Freeman',     title: 'Roofing Contractor',  company: 'MDL Roofing Ltd',                      city: 'Northampton',           linkedin: 'https://www.linkedin.com/in/matty-freeman-69b22a159' },
+    { name: 'Scott Miles',       title: 'Roofing Contractor',  company: 'Scott Miles Roofing Ltd',              city: 'United Kingdom',        linkedin: 'https://www.linkedin.com/in/scott-miles-0a042b137' },
+    { name: 'Andrew Shepherd',   title: 'Roofing Contractor',  company: 'Bradley Services Ltd',                 city: 'Preston',               linkedin: 'https://www.linkedin.com/in/andrew-shepherd-5890a3177' },
+    { name: 'John Newlands',     title: 'Roofing Contractor',  company: 'Roof Repair Store',                    city: 'Paisley',               linkedin: 'https://www.linkedin.com/in/john-newlands-a8163266' },
+    { name: 'Sean Daniels',      title: 'Roofing Contractor',  company: 'Daniels Roofing',                      city: 'London',                linkedin: 'https://www.linkedin.com/in/sean-daniels-054549a4' },
+    { name: 'Lee Dickenson',     title: 'Roofing Contractor',  company: 'Premier Roofing & Construction Ltd',   city: 'Kingston upon Thames',  linkedin: 'https://www.linkedin.com/in/lee-dickenson-53b052260' },
+    { name: 'Mark Tyrie',        title: 'Roofing Contractor',  company: 'Hathaway',                             city: 'Bishop Auckland',       linkedin: 'https://www.linkedin.com/in/mark-tyrie-30261795' },
   ];
   // ── END WEEKLY CONTACTS ──
 
@@ -1639,16 +1638,16 @@ async function loadIndustryTab() {
 
   // Static curated articles — refreshed by Monday automation task
   const articles = [
-    { headline: 'NFRC Publishes Updated Safe Access Guidelines for Pitched Roofing Work', source: 'NFRC', date: '14 Mar 2026', tag: 'Safety', url: 'https://www.nfrc.co.uk/news/safe-access-guidelines-pitched-roofing-2026', snippet: 'New HSE-aligned guidelines covering access equipment, harness requirements and edge protection for residential pitched roof contractors.' },
-    { headline: 'IKO Launches Pro-Therm NPR2 — New High-Performance Flat Roof Board', source: 'Roofing Today', date: '12 Mar 2026', tag: 'New Product', url: 'https://roofingtoday.co.uk/iko-pro-therm-npr2-flat-roof-board/', snippet: 'IKO\'s latest insulation board claims 18% improved thermal performance with no increase in installed cost, targeting the refurb market.' },
-    { headline: 'Building Regulations Update: Part L Changes Impact Flat Roof U-Values', source: 'NBS', date: '10 Mar 2026', tag: 'Policy', url: 'https://www.thenbs.com/knowledge/building-regulations-part-l-flat-roof-u-values-2026', snippet: 'Revised Part L specification requires minimum 0.15 W/m²K for flat roofs in new builds from April 2026 — affecting specification and costings.' },
-    { headline: 'GRP Roofing Market Expected to Grow 9% in 2026 — UK Report', source: 'Construction Index', date: '9 Mar 2026', tag: 'Market', url: 'https://www.theconstructionindex.co.uk/news/view/grp-roofing-market-growth-2026', snippet: 'Demand for fibreglass roofing systems continues to outpace traditional felt as homeowners prioritise longevity and low maintenance.' },
-    { headline: 'Sika Launches New Self-Adhesive Flashing Tape Rated for 30-Year Lifespan', source: 'Sika UK', date: '8 Mar 2026', tag: 'New Product', url: 'https://www.sika.co.uk/en/construction/roofing/sikabit-pro-flash-4000.html', snippet: 'SikaBit® Pro-Flash 4000 is rated to -20°C and is NHBC-approved for use with all major tile systems.' },
-    { headline: 'HSE Issues Warning Over Unlicensed Asbestos Removal on Re-Roofing Jobs', source: 'HSE UK', date: '7 Mar 2026', tag: 'Safety', url: 'https://www.hse.gov.uk/news/asbestos-unlicensed-removal-reroofing-warning.htm', snippet: 'A spike in enforcement actions highlights the risk for contractors removing old asbestos cement tiles without proper notification and licensing.' },
-    { headline: 'Marley Releases 2026 Contractor Training Programme — Free CPD Accredited', source: 'Marley', date: '5 Mar 2026', tag: 'Training', url: 'https://www.marley.co.uk/news/2026-contractor-training-programme', snippet: 'Online and in-person modules covering hip and ridge systems, solar integration, and the new Fibre-Cement Slate range.' },
-    { headline: 'Planning Reform White Paper: Permitted Development for Rooftop Solar Expanded', source: 'Planning Portal', date: '4 Mar 2026', tag: 'Policy', url: 'https://www.planningportal.co.uk/permission/common-projects/solar-panels/solar-panels-on-your-roof', snippet: 'Homeowners can now install roof-integrated solar panels without planning permission on most residential properties — opportunity for roofers.' },
-    { headline: 'Recticel Insulation Joins Forces with BMI Group for Hybrid Warm Roof Systems', source: 'Specified By', date: '3 Mar 2026', tag: 'Industry', url: 'https://www.specifiedby.com/news/recticel-bmi-hybrid-warm-roof-partnership', snippet: 'Partnership aims to deliver an integrated warm roof solution with BIM-compatible specifications for architects and roofing contractors.' },
-    { headline: 'Roofing Labour Shortage: NFRC Calls for Apprenticeship Funding Reform', source: 'Build UK', date: '1 Mar 2026', tag: 'Industry', url: 'https://builduk.org/2026/03/01/roofing-labour-shortage-apprenticeship-reform/', snippet: 'Industry body estimates 14,000 new roofers needed by 2030 and urges government to expand the Construction Skills Fund.' },
+    { headline: 'UK Roofing Awards 2026 Finalists Announced — Ceremony on 8 May at The O2', source: 'Roofing Today', date: '17 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/uk-roofing-awards-2026-finalists-announced/', snippet: 'Now in its 20th year, the UK Roofing Awards finalists have been revealed across all disciplines. The ceremony will be held at the Intercontinental London—The O2 on 8 May 2026. Industry Choice voting opens 19 March.' },
+    { headline: 'Construction Growth Held Back by Uncertainty — Output Forecast Cut to 1.7%', source: 'Roofing Today', date: '19 Mar 2026', tag: 'Market', url: 'https://roofingtoday.co.uk/construction-growth-held-back-by-uncertainty/', snippet: 'The CPA has downgraded its 2026 UK construction output growth forecast from 2.8% to 1.7% amid economic uncertainty, impacting new build and commercial roofing pipelines.' },
+    { headline: 'Data Shows Younger, More Skilled UK Construction Workforce in 2025', source: 'Roofing Today', date: '18 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/data-shows-younger-more-skilled-uk-construction-workforce/', snippet: 'CSCS data reveals more than 1 in 4 cardholders are now under 30, and the proportion of skilled/advanced workers has risen significantly year-on-year.' },
+    { headline: '£120bn Public Construction Framework to Open Soon — Major Opportunity for Roofing Contractors', source: 'Roofing Today', date: '20 Mar 2026', tag: 'Policy', url: 'https://roofingtoday.co.uk/120bn-public-construction-framework-to-open-soon/', snippet: 'A new national public construction procurement framework worth £120bn is set to launch, opening major public sector contract opportunities for roofing and envelope contractors.' },
+    { headline: 'Brecon Cathedral Secures £2m Heritage Grant for Urgent Reroof', source: 'Roofing Today', date: '14 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/brecon-cathedral-secures-2m-heritage-grant-for-urgent-reroof/', snippet: 'Work is due to start in March 2026 on the south transept roofs. The project involves sensitive heritage roofing work at one of Wales's most significant ecclesiastical buildings.' },
+    { headline: 'Six Weeks Left to Enter the 2026 SPRA Awards — Deadline 30 April', source: 'Roofing Today', date: '13 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/six-weeks-left-to-enter-the-2026-spra-awards/', snippet: 'The SPRA Awards celebrate achievements in the single ply roofing sector. Entries are open to SPRA members and deadline for project submissions is Thursday 30 April 2026.' },
+    { headline: 'Rooflight Association Named Official Partner of UK Construction Week 2026', source: 'Roofing Today', date: '12 Mar 2026', tag: 'Industry', url: 'https://roofingtoday.co.uk/rooflight-association-official-partner-of-uk-construction-week-2026/', snippet: 'The partnership will see rooflights prominently featured at UK Construction Week, highlighting the growing role of natural light in roofing and building envelope design.' },
+    { headline: 'Manufacturers Information Hub Launches to Support UK Roofing Specifiers', source: 'Roofing Today', date: '10 Mar 2026', tag: 'New Product', url: 'https://roofingtoday.co.uk/manufacturers-information-hub-launches-in-uk/', snippet: 'A new digital hub has launched giving roofing contractors and specifiers centralised access to product data, installation guides, BIM files and warranty information from leading UK manufacturers.' },
+    { headline: 'The Great British Slate Off Returns for 2026 — Nominations Now Open', source: 'Roofing Today', date: '8 Mar 2026', tag: 'Training', url: 'https://roofingtoday.co.uk/the-great-british-slate-off-returns-for-2026/', snippet: 'The popular craft roofing competition is back for 2026, celebrating skill in traditional slate and tile work. Nominations are open for contractors wanting to showcase their heritage roofing expertise.' },
+    { headline: 'UK Roofing Awards 2026: Which Projects Are Up for the Top Honours?', source: 'Total Contractor', date: '17 Mar 2026', tag: 'Industry', url: 'https://www.total-contractor.co.uk/uk-roofing-awards-2026-which-projects-are-up-for-the-top-honours/', snippet: 'Total Contractor reviews all the shortlisted projects across each award category, from single ply and liquid applied to heritage and green roofing — including the Murray Edwards College and Jersey Opera House projects.' },
   ];
 
   const tagColors = { 'Safety':'red', 'New Product':'green', 'Policy':'purple', 'Market':'blue', 'Training':'amber', 'Industry':'blue' };
@@ -1677,7 +1676,7 @@ async function loadIndustryTab() {
     </div>
   `).join('');
 
-  document.getElementById('industry-last-updated').textContent = `Week of 16 Mar 2026 · refreshed Monday`;
+  document.getElementById('industry-last-updated').textContent = `Week of 23 Mar 2026 · refreshed Monday`;
 }
 
 // Auto-load new tabs when clicked (lazy loading)
